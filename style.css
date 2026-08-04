@@ -1,0 +1,686 @@
+/* ======================================================
+   SPACE QUIZ GAME
+   STYLE.CSS
+   PART 1
+====================================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Orbitron',sans-serif;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    overflow:hidden;
+    width:100%;
+    height:100vh;
+    color:#fff;
+    background:
+    radial-gradient(circle at top,#22336b,#090d1b 40%,#020308 100%);
+}
+
+/* =====================
+   HIDDEN
+===================== */
+
+.hidden{
+    display:none;
+}
+
+/* =====================
+   STAR BACKGROUND
+===================== */
+
+#stars,
+#stars2,
+#stars3{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+}
+
+#stars{
+    background-image:
+    radial-gradient(white 1px,transparent 1px);
+    background-size:50px 50px;
+    animation:moveStars 90s linear infinite;
+    opacity:.5;
+}
+
+#stars2{
+    background-image:
+    radial-gradient(#8edbff 1px,transparent 1px);
+    background-size:90px 90px;
+    animation:moveStars 140s linear infinite;
+    opacity:.35;
+}
+
+#stars3{
+    background-image:
+    radial-gradient(#ffd966 2px,transparent 2px);
+    background-size:150px 150px;
+    animation:moveStars 200s linear infinite;
+    opacity:.2;
+}
+
+@keyframes moveStars{
+
+from{
+transform:translateY(0);
+}
+
+to{
+transform:translateY(-1000px);
+}
+
+}
+
+/* =====================
+PLANETS
+===================== */
+
+.planet{
+
+position:absolute;
+
+width:220px;
+height:220px;
+
+border-radius:50%;
+
+top:40px;
+right:40px;
+
+background:
+radial-gradient(circle at 30% 30%,
+#7df9ff,
+#006eff,
+#00153d);
+
+box-shadow:
+0 0 80px #1f8fff;
+
+animation:
+floatPlanet 8s ease-in-out infinite;
+
+}
+
+.planet2{
+
+position:absolute;
+
+width:120px;
+height:120px;
+
+border-radius:50%;
+
+left:80px;
+bottom:80px;
+
+background:
+radial-gradient(circle,
+#ffb347,
+#ff5f6d);
+
+box-shadow:
+0 0 40px orange;
+
+animation:
+floatPlanet2 10s ease-in-out infinite;
+
+}
+
+@keyframes floatPlanet{
+
+0%{
+transform:translateY(0px);
+}
+
+50%{
+transform:translateY(-20px);
+}
+
+100%{
+transform:translateY(0px);
+}
+
+}
+
+@keyframes floatPlanet2{
+
+0%{
+transform:translateY(0px);
+}
+
+50%{
+transform:translateY(25px);
+}
+
+100%{
+transform:translateY(0px);
+}
+
+}
+
+/* =====================
+LOADING SCREEN
+===================== */
+
+#loading{
+
+position:absolute;
+
+width:100%;
+height:100vh;
+
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+
+background:#01020d;
+
+z-index:999;
+
+}
+
+#loading h1{
+
+font-size:55px;
+
+letter-spacing:5px;
+
+color:#7df9ff;
+
+text-shadow:
+0 0 20px cyan,
+0 0 50px cyan;
+
+margin-bottom:30px;
+
+}
+
+.loader{
+
+width:120px;
+height:120px;
+
+border-radius:50%;
+
+border:10px solid rgba(255,255,255,.1);
+
+border-top:10px solid cyan;
+
+animation:spin 1s linear infinite;
+
+}
+
+@keyframes spin{
+
+100%{
+transform:rotate(360deg);
+}
+
+}
+
+#loading p{
+
+margin-top:25px;
+
+font-size:18px;
+
+letter-spacing:2px;
+
+color:white;
+
+}
+
+/* =====================
+SECTIONS
+===================== */
+
+section{
+
+position:absolute;
+
+width:100%;
+height:100vh;
+
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+
+}
+
+/* =====================
+MAIN MENU
+===================== */
+
+#menu h1{
+
+font-size:60px;
+
+text-shadow:
+0 0 15px cyan,
+0 0 40px blue;
+
+margin-bottom:20px;
+
+}
+
+#menu p{
+
+width:80%;
+
+max-width:700px;
+
+text-align:center;
+
+font-size:20px;
+
+line-height:35px;
+
+margin-bottom:40px;
+
+color:#dfefff;
+
+}
+
+button{
+
+cursor:pointer;
+
+border:none;
+
+padding:16px 40px;
+
+border-radius:50px;
+
+font-size:18px;
+
+font-weight:bold;
+
+transition:.35s;
+
+background:
+linear-gradient(
+45deg,
+#00d4ff,
+#005eff);
+
+color:white;
+
+box-shadow:
+0 0 25px cyan;
+
+}
+
+button:hover{
+
+transform:
+scale(1.08);
+
+box-shadow:
+0 0 40px cyan;
+
+}
+
+button:active{
+
+transform:
+scale(.95);
+
+}/* ======================================================
+   STYLE.CSS
+   PART 2
+====================================================== */
+
+/* =====================
+CATEGORY & DIFFICULTY
+===================== */
+
+#category h2,
+#difficulty h2{
+    font-size:42px;
+    margin-bottom:35px;
+    color:#7df9ff;
+    text-shadow:0 0 15px cyan;
+}
+
+#category,
+#difficulty{
+    gap:18px;
+}
+
+.cat,
+.diff{
+    width:320px;
+    max-width:90%;
+}
+
+/* =====================
+QUIZ SCREEN
+===================== */
+
+#quiz{
+    padding:30px;
+}
+
+/* =====================
+HUD
+===================== */
+
+.hud{
+
+    width:95%;
+    max-width:1200px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-bottom:25px;
+
+    padding:15px 25px;
+
+    border-radius:20px;
+
+    background:rgba(255,255,255,.08);
+
+    backdrop-filter:blur(12px);
+
+    border:1px solid rgba(255,255,255,.2);
+
+    box-shadow:
+    0 0 25px rgba(0,255,255,.25);
+
+}
+
+.hud div{
+
+    font-size:22px;
+    font-weight:bold;
+
+    color:#ffffff;
+
+}
+
+/* =====================
+PROGRESS BAR
+===================== */
+
+.progress{
+
+    width:95%;
+    max-width:1200px;
+
+    height:18px;
+
+    background:rgba(255,255,255,.15);
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    margin-bottom:35px;
+
+}
+
+#progressBar{
+
+    width:0%;
+
+    height:100%;
+
+    background:
+    linear-gradient(90deg,#00ffe7,#00b7ff);
+
+    box-shadow:
+    0 0 20px cyan;
+
+    transition:.4s;
+
+}
+
+/* =====================
+QUESTION BOX
+===================== */
+
+#questionBox{
+
+    width:95%;
+    max-width:900px;
+
+    padding:40px;
+
+    border-radius:25px;
+
+    background:rgba(255,255,255,.08);
+
+    backdrop-filter:blur(14px);
+
+    border:1px solid rgba(255,255,255,.15);
+
+    box-shadow:
+    0 0 35px rgba(0,255,255,.2);
+
+}
+
+#question{
+
+    font-size:30px;
+
+    text-align:center;
+
+    margin-bottom:35px;
+
+    line-height:1.5;
+
+}
+
+/* =====================
+ANSWER BUTTONS
+===================== */
+
+#answers{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(2,1fr);
+
+    gap:18px;
+
+}
+
+.answer{
+
+    width:100%;
+
+    padding:18px;
+
+    border-radius:18px;
+
+    font-size:18px;
+
+    background:
+    linear-gradient(
+    45deg,
+    #133c8b,
+    #00bfff);
+
+    transition:.25s;
+
+}
+
+.answer:hover{
+
+    transform:translateY(-4px);
+
+}
+
+.answer.correct{
+
+    background:
+    linear-gradient(
+    45deg,
+    #00c853,
+    #00ff95);
+
+    animation:correctFlash .4s;
+
+}
+
+.answer.wrong{
+
+    background:
+    linear-gradient(
+    45deg,
+    #ff1744,
+    #ff616f);
+
+    animation:wrongFlash .4s;
+
+}
+
+/* =====================
+RESULT SCREEN
+===================== */
+
+#result h1{
+
+    font-size:60px;
+
+    color:#7df9ff;
+
+    text-shadow:
+    0 0 20px cyan;
+
+    margin-bottom:25px;
+
+}
+
+#result h2{
+
+    font-size:34px;
+
+    margin-bottom:35px;
+
+}
+
+/* =====================
+ANIMATIONS
+===================== */
+
+@keyframes correctFlash{
+
+0%{
+transform:scale(1);
+}
+
+50%{
+transform:scale(1.08);
+}
+
+100%{
+transform:scale(1);
+}
+
+}
+
+@keyframes wrongFlash{
+
+0%{
+transform:translateX(0);
+}
+
+25%{
+transform:translateX(-10px);
+}
+
+50%{
+transform:translateX(10px);
+}
+
+75%{
+transform:translateX(-10px);
+}
+
+100%{
+transform:translateX(0);
+}
+
+}
+
+/* =====================
+SCREEN SHAKE
+===================== */
+
+.shake{
+
+animation:shake .4s;
+
+}
+
+@keyframes shake{
+
+0%{transform:translateX(0);}
+20%{transform:translateX(-10px);}
+40%{transform:translateX(10px);}
+60%{transform:translateX(-8px);}
+80%{transform:translateX(8px);}
+100%{transform:translateX(0);}
+
+}
+
+/* =====================
+RESPONSIVE
+===================== */
+
+@media(max-width:768px){
+
+#menu h1{
+
+font-size:40px;
+
+}
+
+#question{
+
+font-size:22px;
+
+}
+
+#answers{
+
+grid-template-columns:1fr;
+
+}
+
+.hud{
+
+flex-direction:column;
+
+gap:12px;
+
+}
+
+button{
+
+width:90%;
+
+}
+
+#questionBox{
+
+padding:25px;
+
+}
+
+  }
