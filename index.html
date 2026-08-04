@@ -4,173 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🌌 Space Math Quiz</title>
-
     <link rel="stylesheet" href="style.css">
-
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<!-- Background -->
-<div id="stars"></div>
-<div id="stars2"></div>
-<div id="stars3"></div>
+    <!-- Background -->
+    <div id="stars"></div>
+    <div id="stars2"></div>
+    <div id="stars3"></div>
 
-<div class="planet"></div>
-<div class="planet2"></div>
+    <div class="planet"></div>
+    <div class="planet2"></div>
 
-<!-- Loading Screen -->
-<section id="loading">
-    <h1>🚀 SPACE QUIZ</h1>
-    <div class="loader"></div>
-    <p>Loading Universe...</p>
-</section>
+    <!-- Loading Screen -->
+    <section id="loading">
+        <h1>🚀 SPACE QUIZ</h1>
+        <div class="loader"></div>
+        <p>Loading Universe...</p>
+    </section>
 
-<!-- Main Menu -->
-<section id="menu" class="hidden">
+    <!-- Main Menu -->
+    <section id="start-screen" class="hidden">
+        <h1>🌌 SPACE QUIZ GAME</h1>
+        <p>
+            Test your knowledge about
+            Arithmetic & Geometric
+            Sequences and Series!
+        </p>
+        <button id="start-btn">
+            ▶ Start Game
+        </button>
+    </section>
 
-    <h1>🌌 SPACE QUIZ GAME</h1>
+    <!-- Category Selection -->
+    <section id="category-screen" class="hidden">
+        <h2>Select Category</h2>
+        <div class="category-container">
+            <button class="category-btn" data-category="arithmeticSequence">Arithmetic Sequence</button>
+            <button class="category-btn" data-category="arithmeticSeries">Arithmetic Series</button>
+            <button class="category-btn" data-category="geometricSequence">Geometric Sequence</button>
+            <button class="category-btn" data-category="geometricSeries">Geometric Series</button>
+        </div>
+    </section>
 
-    <p>
-        Test your knowledge about
-        Arithmetic & Geometric
-        Sequences and Series!
-    </p>
+    <!-- Quiz HUD & Question Screen -->
+    <section id="quiz-screen" class="hidden">
+        <div class="hud">
+            <div>❤️ Lives: <span id="lives">3</span></div>
+            <div>⭐ Score: <span id="score">0</span></div>
+            <div>⏱ Time: <span id="timer">20</span>s</div>
+        </div>
 
-    <button id="playBtn">
-        ▶ Start Game
-    </button>
+        <div class="progress-container">
+            <div id="progress"></div>
+        </div>
 
-</section>
+        <div id="questionBox">
+            <h2 id="question">Question Here</h2>
+            <div id="choices"></div>
+        </div>
+    </section>
 
-<!-- Category -->
-<section id="category" class="hidden">
+    <!-- Result Screen -->
+    <section id="result-screen" class="hidden">
+        <h1>Mission Complete!</h1>
+        <h2>Final Score: <span id="final-score">0</span></h2>
+        <button id="restart-btn">Play Again</button>
+    </section>
 
-<h2>Select Category</h2>
+    <!-- Audio Elements -->
+    <audio id="bgMusic" loop src="sounds/space.mp3"></audio>
+    <audio id="correct" src="sounds/correct.mp3"></audio>
+    <audio id="wrong" src="sounds/wrong.mp3"></audio>
+    <audio id="click" src="sounds/click.mp3"></audio>
 
-<button class="cat" data-cat="Arithmetic Sequence">
-Arithmetic Sequence
-</button>
-
-<button class="cat" data-cat="Arithmetic Series">
-Arithmetic Series
-</button>
-
-<button class="cat" data-cat="Geometric Sequence">
-Geometric Sequence
-</button>
-
-<button class="cat" data-cat="Geometric Series">
-Geometric Series
-</button>
-
-</section>
-
-<!-- Difficulty -->
-<section id="difficulty" class="hidden">
-
-<h2>Select Difficulty</h2>
-
-<button class="diff" data-diff="easy">
-Easy
-</button>
-
-<button class="diff" data-diff="medium">
-Medium
-</button>
-
-<button class="diff" data-diff="hard">
-Hard
-</button>
-
-</section>
-
-<!-- HUD -->
-<section id="quiz" class="hidden">
-
-<div class="hud">
-
-<div>
-❤️ Lives:
-<span id="lives">3</span>
-</div>
-
-<div>
-⭐ Score:
-<span id="score">0</span>
-</div>
-
-<div>
-⏱
-<span id="timer">30</span>
-</div>
-
-</div>
-
-<div class="progress">
-<div id="progressBar"></div>
-</div>
-
-<div id="questionBox">
-
-<h2 id="question">
-Question Here
-</h2>
-
-<div id="answers">
-
-<button class="answer"></button>
-<button class="answer"></button>
-<button class="answer"></button>
-<button class="answer"></button>
-
-</div>
-
-</div>
-
-</section>
-
-<!-- Result -->
-
-<section id="result" class="hidden">
-
-<h1>Mission Complete!</h1>
-
-<h2>
-Final Score:
-<span id="finalScore">
-0
-</span>
-</h2>
-
-<button id="restart">
-Play Again
-</button>
-
-</section>
-
-<!-- Effects -->
-
-<div id="particles"></div>
-
-<audio id="bgMusic" loop>
-<source src="assets/bg.mp3">
-</audio>
-
-<audio id="correct">
-<source src="assets/correct.mp3">
-</audio>
-
-<audio id="wrong">
-<source src="assets/wrong.mp3">
-</audio>
-
-<audio id="click">
-<source src="assets/click.mp3">
-</audio>
-
-<script src="questions.js"></script>
-<script src="script.js"></script>
-
+    <!-- Scripts -->
+    <script src="questions.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
