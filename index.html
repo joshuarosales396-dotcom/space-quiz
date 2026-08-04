@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Geometric Series Quiz Game</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #1e1e2f, #2a2a40);
+      color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .quiz-card {
+      background: #252538;
+      border-radius: 12px;
+      padding: 30px;
+      width: 100%;
+      max-width: 650px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      border: 1px solid #3d3d5c;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #3d3d5c;
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      font-size: 1.3rem;
+      margin: 0;
+      color: #00d2ff;
+    }
+
+    .score-board {
+      background: #1e1e2f;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: bold;
+      color: #00e676;
+    }
+
+    .level-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    .easy { background: #2e7d32; color: #ffffff; }
+    .medium { background: #ef6c00; color: #ffffff; }
+    .hard { background: #c62828; color: #ffffff; }
+
+    .question {
+      font-size: 1.15rem;
+      margin-bottom: 25px;
+      line-height: 1.5;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .option-btn {
+      background: #32324d;
+      color: #ffffff;
+      border: 2px solid transparent;
+      padding: 14px 18px;
+      border-radius: 8px;
+      font-size: 1rem;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .option-btn:hover:not([disabled]) {
+      background: #3d3d5c;
+      border-color: #00d2ff;
+    }
+
+    .option-btn.correct {
+      background: #1b5e20 !important;
+      border-color: #00e676 !important;
+    }
+
+    .option-btn.wrong {
+      background: #b71c1c !important;
+      border-color: #ff5252 !important;
+    }
+
+    .next-btn {
+      margin-top: 25px;
+      width: 100%;
+      padding: 14px;
+      background: #00d2ff;
+      color: #1e1e2f;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: none;
+      transition: background 0.2s ease;
+    }
+
+    .next-btn:hover {
+      background: #0099cc;
+    }
+
+    .results {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .results h2 {
+      font-size: 2rem;
+      color: #00d2ff;
+      margin-bottom: 10px;
+    }
+
+    .restart-btn {
+      background: #00e676;
+      color: #1e1e2f;
+      border: none;
+      padding: 12px 25px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
+    .restart-btn:hover {
+      background: #00b359;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="quiz-card">
+    <div class="header">
+      <h1>📐 Geometric Series Challenge</h1>
+      <div class="score-board" id="score">Score: 0</div>
+    </div>
+
+    <div id="quizContent">
+      <span class="level-badge" id="levelBadge">Easy</span>
+      <div class="question" id="question">Loading question...</div>
+      <div class="options" id="options"></div>
+      <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Next Question ➡</button>
+    </div>
+
+    <div class="results" id="results" style="display: none;">
+      <h2>Quiz Completed! 🎉</h2>
+      <p id="finalScore" style="font-size: 1.3rem;"></p>
+      <button class="restart-btn" onclick="restartQuiz()">Play Again 🔄</button>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      // EASY LEVEL
+      {
+        level: "Easy",
+        levelClass: "easy",
+        question: "1. What is the common ratio (r) of the geometric sequence: 3, 6, 12, 24...?",
+        options: ["2", "3", "4", "6"],
+        correct: 0
+      },
+      {
+        level: "Easy",
+        levelClass: "easy",
+        question: "2. Which of the following formulas is used to find the sum of a finite geometric series?",
+        options: [
+          "S_n = a_1(1 - r^n) / (1 - r)",
+          "S_n = (n/2)(a_1 + a_n)",
+          "S_n = a_1 / (1 - r)",
+          "a_n = a_1 * r^(n-1)"
+        ],
+        correct: 0
+      },
+      {
+        level: "Easy",
+        levelClass: "easy",
+        question: "3. What is the sum of the first 3 terms of the series: 2 + 6 + 18...?",
+        options: ["20", "24", "26", "28"],
+        correct: 2
+      },
+
+      // MEDIUM LEVEL
+      {
+        level: "Medium",
+        levelClass: "medium",
+        question: "4. Under what condition does an Infinite Geometric Series converge to a finite sum?",
+        options: ["|r| > 1", "|r| < 1", "r = 1", "r = 0 only"],
+        correct: 1
+      },
+      {
+        level: "Medium",
+        levelClass: "medium",
+        question: "5. Find the sum of the infinite geometric series: 16 + 8 + 4 + 2...",
+        options: ["24", "30", "32", "Infinity"],
+        correct: 2
+      },
+      {
+        level: "Medium",
+        levelClass: "medium",
+        question: "6. If the first term (a₁) is 5 and the common ratio (r) is 3, what is the 4th term?",
+        options: ["45", "135", "405", "15"],
+        correct: 1
+      },
+
+      // HARD LEVEL
+      {
+        level: "Hard",
+        levelClass: "hard",
+        question: "7. An infinite geometric series has a sum of 20 and a first term of 5. What is the common ratio (r)?",
+        options: ["1/4", "1/2", "3/4", "2/3"],
+        correct: 2
+      },
+      {
+        level: "Hard",
+        levelClass: "hard",
+        question: "8. Express the repeating decimal 0.333... as an infinite geometric series and find its sum.",
+        options: ["1/2", "1/3", "3/10", "1/9"],
+        correct: 1
+      },
+      {
+        level: "Hard",
+        levelClass: "hard",
+        question: "9. A ball is dropped from a height of 100 meters. Each time it bounces, it reaches 50% of its previous height. What is the total vertical distance traveled by the ball when it stops?",
+        options: ["200 meters", "300 meters", "400 meters", "150 meters"],
+        correct: 1
+      }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    const levelBadgeEl = document.getElementById('levelBadge');
+    const questionEl = document.getElementById('question');
+    const optionsEl = document.getElementById('options');
+    const nextBtn = document.getElementById('nextBtn');
+    const scoreEl = document.getElementById('score');
+    const quizContent = document.getElementById('quizContent');
+    const resultsEl = document.getElementById('results');
+    const finalScoreEl = document.getElementById('finalScore');
+
+    function loadQuestion() {
+      const currentQuiz = questions[currentQuestionIndex];
+      
+      // Update Level Badge
+      levelBadgeEl.textContent = currentQuiz.level;
+      levelBadgeEl.className = `level-badge ${currentQuiz.levelClass}`;
+
+      questionEl.textContent = currentQuiz.question;
+      optionsEl.innerHTML = '';
+      nextBtn.style.display = 'none';
+
+      currentQuiz.options.forEach((option, index) => {
+        const button = document.createElement('button');
+        button.classList.add('option-btn');
+        button.textContent = option;
+        button.onclick = () => selectOption(button, index, currentQuiz.correct);
+        optionsEl.appendChild(button);
+      });
+    }
+
+    function selectOption(selectedBtn, selectedIndex, correctIndex) {
+      const allButtons = optionsEl.querySelectorAll('.option-btn');
+      
+      allButtons.forEach(btn => btn.disabled = true);
+
+      if (selectedIndex === correctIndex) {
+        selectedBtn.classList.add('correct');
+        score += 10;
+        scoreEl.textContent = `Score: ${score}`;
+      } else {
+        selectedBtn.classList.add('wrong');
+        allButtons[correctIndex].classList.add('correct');
+      }
+
+      nextBtn.style.display = 'block';
+    }
+
+    function nextQuestion() {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < questions.length) {
+        loadQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      quizContent.style.display = 'none';
+      resultsEl.style.display = 'block';
+      const totalPossible = questions.length * 10;
+      finalScoreEl.textContent = `You scored ${score} out of ${totalPossible} points!`;
+    }
+
+    function restartQuiz() {
+      score = 0;
+      currentQuestionIndex = 0;
+      scoreEl.textContent = `Score: ${score}`;
+      resultsEl.style.display = 'none';
+      quizContent.style.display = 'block';
+      loadQuestion();
+    }
+
+    // Start Game
+    loadQuestion();
+  </script>
+</body>
+</html>
