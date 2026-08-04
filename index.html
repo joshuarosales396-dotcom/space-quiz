@@ -103,8 +103,6 @@
       background: rgba(0, 0, 0, 0.4); padding: 6px 12px; border-radius: 20px;
       font-weight: bold; font-size: 0.85rem; border: 1px solid rgba(255, 255, 255, 0.2);
     }
-    .timer-container { width: 100%; height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
-    .timer-bar { height: 100%; width: 100%; background: linear-gradient(90deg, #00ffcc, #ff007f); transition: width 1s linear; }
     .question-box { font-size: 1.15rem; line-height: 1.6; margin-bottom: 25px; min-height: 60px; text-align: left; }
     .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
     .btn-option {
@@ -157,9 +155,9 @@
     <div id="view-difficulty" style="display: none;">
       <h1 id="diff-title">Topic Title</h1>
       <p class="subtitle">Select difficulty level:</p>
-      <button class="btn-diff easy" onclick="startQuiz('easy')">🟢 Easy</button>
-      <button class="btn-diff medium" onclick="startQuiz('medium')">🟡 Medium</button>
-      <button class="btn-diff hard" onclick="startQuiz('hard')">🔴 Hard</button>
+      <button class="btn-diff easy" onclick="startQuiz('easy')">🟢 Easy (5 Questions)</button>
+      <button class="btn-diff medium" onclick="startQuiz('medium')">🟡 Medium (5 Questions)</button>
+      <button class="btn-diff hard" onclick="startQuiz('hard')">🔴 Hard (5 Questions)</button>
       <br><br>
       <button class="btn-action" onclick="showView('view-lobby')">⬅ Back to Lobby</button>
     </div>
@@ -173,7 +171,6 @@
           <div class="stat-box" id="streak-el">🔥 0</div>
         </div>
       </div>
-      <div class="timer-container"><div class="timer-bar" id="timer-bar"></div></div>
       <div class="question-box" id="question-el">Question goes here...</div>
       <div class="options-grid" id="options-el"></div>
       <div class="footer">
@@ -192,7 +189,6 @@
   </div>
 
   <script>
-    // Audio Synthesizer Engine
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     let bgmOsc = null, bgmGain = null, bgmPlaying = false;
 
@@ -215,8 +211,8 @@
       osc.connect(gain); gain.connect(audioCtx.destination);
 
       if (type === 'correct') {
-        osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
-        osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.08); // E5
+        osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+        osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.08);
         gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
         osc.start(); osc.stop(audioCtx.currentTime + 0.25);
@@ -248,73 +244,109 @@
       bgmOsc = audioCtx.createOscillator();
       bgmGain = audioCtx.createGain();
       bgmOsc.type = 'triangle';
-      bgmOsc.frequency.setValueAtTime(110, audioCtx.currentTime); // Low space tone
+      bgmOsc.frequency.setValueAtTime(110, audioCtx.currentTime);
       bgmGain.gain.setValueAtTime(0.02, audioCtx.currentTime);
       bgmOsc.connect(bgmGain);
       bgmGain.connect(audioCtx.destination);
       bgmOsc.start();
     }
 
-    // Question Bank Data
+    // Question Bank Data (5 Questions Each Category)
     const questionBank = {
       arith_seq: {
         title: "Arithmetic Sequence",
         easy: [
-          { q: "Find the common difference (d): 3, 7, 11, 15...", options: ["A) 4", "B) 3", "C) 5", "D) 2"], answer: 0 },
-          { q: "What is the 5th term of sequence: 2, 5, 8...", options: ["A) 11", "B) 14", "C) 17", "D) 12"], answer: 1 }
+          { q: "1. Find the common difference (d): 3, 7, 11, 15...", options: ["A) 4", "B) 3", "C) 5", "D) 2"], answer: 0 },
+          { q: "2. What is the 5th term of sequence: 2, 5, 8...", options: ["A) 11", "B) 14", "C) 17", "D) 12"], answer: 1 },
+          { q: "3. Find the next term: 10, 20, 30, 40...", options: ["A) 45", "B) 50", "C) 60", "D) 55"], answer: 1 },
+          { q: "4. What is d in: 12, 9, 6, 3...?", options: ["A) 3", "B) -3", "C) -2", "D) 2"], answer: 1 },
+          { q: "5. Find the 4th term: a₁ = 1, d = 4.", options: ["A) 13", "B) 9", "C) 17", "D) 12"], answer: 0 }
         ],
         medium: [
-          { q: "If a₁ = 4 and d = 6, find the 10th term (a₁₀).", options: ["A) 60", "B) 58", "C) 54", "D) 64"], answer: 1 },
-          { q: "Find the 12th term of: 100, 95, 90...", options: ["A) 40", "B) 50", "C) 45", "D) 55"], answer: 2 }
+          { q: "1. If a₁ = 4 and d = 6, find the 10th term (a₁₀).", options: ["A) 60", "B) 58", "C) 54", "D) 64"], answer: 1 },
+          { q: "2. Find the 12th term of: 100, 95, 90...", options: ["A) 40", "B) 50", "C) 45", "D) 55"], answer: 2 },
+          { q: "3. What is the 15th term of: 2, 7, 12...?", options: ["A) 72", "B) 70", "C) 77", "D) 82"], answer: 0 },
+          { q: "4. If a₁ = -5 and d = 3, find a₈.", options: ["A) 16", "B) 19", "C) 18", "D) 21"], answer: 0 },
+          { q: "5. Find d if a₁ = 10 and a₅ = 30.", options: ["A) 4", "B) 5", "C) 6", "D) 3"], answer: 1 }
         ],
         hard: [
-          { q: "Which term of 5, 11, 17... is equal to 119?", options: ["A) 19th", "B) 20th", "C) 21st", "D) 18th"], answer: 1 },
-          { q: "In an arithmetic sequence, a₃ = 12 and a₇ = 24. Find d.", options: ["A) 2", "B) 3", "C) 4", "D) 5"], answer: 1 }
+          { q: "1. Which term of 5, 11, 17... is equal to 119?", options: ["A) 19th", "B) 20th", "C) 21st", "D) 18th"], answer: 1 },
+          { q: "2. In an arithmetic sequence, a₃ = 12 and a₇ = 24. Find d.", options: ["A) 2", "B) 3", "C) 4", "D) 5"], answer: 1 },
+          { q: "3. If a₄ = 18 and a₉ = 43, find the first term (a₁).", options: ["A) 3", "B) 5", "C) 2", "D) 4"], answer: 0 },
+          { q: "4. How many terms are in sequence: 7, 11, 15... 79?", options: ["A) 18", "B) 19", "C) 20", "D) 21"], answer: 1 },
+          { q: "5. If a₁₀ = 55 and d = 6, find a₁.", options: ["A) 1", "B) 2", "C) 0", "D) -1"], answer: 0 }
         ]
       },
       arith_ser: {
         title: "Arithmetic Series",
         easy: [
-          { q: "Find the sum of the first 4 terms: 2 + 4 + 6 + 8", options: ["A) 20", "B) 18", "C) 24", "D) 16"], answer: 0 },
-          { q: "Evaluate S₃ for: 5 + 10 + 15...", options: ["A) 25", "B) 30", "C) 35", "D) 40"], answer: 1 }
+          { q: "1. Find the sum of: 2 + 4 + 6 + 8", options: ["A) 20", "B) 18", "C) 24", "D) 16"], answer: 0 },
+          { q: "2. Evaluate S₃ for: 5 + 10 + 15...", options: ["A) 25", "B) 30", "C) 35", "D) 40"], answer: 1 },
+          { q: "3. Sum of first 3 terms: 1 + 2 + 3...", options: ["A) 6", "B) 5", "C) 7", "D) 8"], answer: 0 },
+          { q: "4. Find S₄ for: 10 + 20 + 30 + 40", options: ["A) 90", "B) 100", "C) 110", "D) 80"], answer: 1 },
+          { q: "5. Evaluate 4 + 8 + 12 + 16", options: ["A) 40", "B) 36", "C) 44", "D) 32"], answer: 0 }
         ],
         medium: [
-          { q: "Find S₁₀ for sequence where a₁ = 3 and a₁₀ = 39.", options: ["A) 210", "B) 195", "C) 200", "D) 220"], answer: 0 },
-          { q: "Sum of first 10 terms of: 1 + 3 + 5 + 7...", options: ["A) 90", "B) 110", "C) 100", "D) 120"], answer: 2 }
+          { q: "1. Find S₁₀ for sequence where a₁ = 3 and a₁₀ = 39.", options: ["A) 210", "B) 195", "C) 200", "D) 220"], answer: 0 },
+          { q: "2. Sum of first 10 terms of: 1 + 3 + 5 + 7...", options: ["A) 90", "B) 110", "C) 100", "D) 120"], answer: 2 },
+          { q: "3. Find S₈ if a₁ = 2 and d = 4.", options: ["A) 128", "B) 120", "C) 112", "D) 130"], answer: 0 },
+          { q: "4. Evaluate S₁₅ for: 5 + 10 + 15...", options: ["A) 600", "B) 580", "C) 620", "D) 550"], answer: 0 },
+          { q: "5. Find S₆ if a₁ = 50 and a₆ = 10.", options: ["A) 180", "B) 200", "C) 160", "D) 150"], answer: 0 }
         ],
         hard: [
-          { q: "Find the sum of all even integers from 2 to 50.", options: ["A) 650", "B) 600", "C) 700", "D) 550"], answer: 0 },
-          { q: "If a₁ = 7, d = 3, find S₂₀.", options: ["A) 710", "B) 700", "C) 720", "D) 690"], answer: 0 }
+          { q: "1. Find the sum of all even integers from 2 to 50.", options: ["A) 650", "B) 600", "C) 700", "D) 550"], answer: 0 },
+          { q: "2. If a₁ = 7, d = 3, find S₂₀.", options: ["A) 710", "B) 700", "C) 720", "D) 690"], answer: 0 },
+          { q: "3. Sum of first 25 multiples of 3?", options: ["A) 975", "B) 950", "C) 1000", "D) 925"], answer: 0 },
+          { q: "4. If Sn = 210, a₁ = 2, and a_n = 40, find n.", options: ["A) 10", "B) 12", "C) 15", "D) 8"], answer: 0 },
+          { q: "5. Find sum of integers from 1 to 100.", options: ["A) 5050", "B) 5000", "C) 5100", "D) 4950"], answer: 0 }
         ]
       },
       geom_seq: {
         title: "Geometric Sequence",
         easy: [
-          { q: "Find common ratio (r): 2, 6, 18, 54...", options: ["A) 2", "B) 3", "C) 4", "D) 6"], answer: 1 },
-          { q: "What is the 4th term: 5, 10, 20...", options: ["A) 30", "B) 35", "C) 40", "D) 50"], answer: 2 }
+          { q: "1. Find common ratio (r): 2, 6, 18, 54...", options: ["A) 2", "B) 3", "C) 4", "D) 6"], answer: 1 },
+          { q: "2. What is the 4th term: 5, 10, 20...", options: ["A) 30", "B) 35", "C) 40", "D) 50"], answer: 2 },
+          { q: "3. Find r in sequence: 1, 4, 16, 64...", options: ["A) 4", "B) 2", "C) 8", "D) 3"], answer: 0 },
+          { q: "4. Next term of: 3, -6, 12, -24...", options: ["A) 48", "B) -48", "C) 36", "D) -36"], answer: 0 },
+          { q: "5. What is r in: 100, 50, 25...?", options: ["A) 2", "B) 0.5", "C) -2", "D) -0.5"], answer: 1 }
         ],
         medium: [
-          { q: "Find a₆ if a₁ = 3 and r = 2.", options: ["A) 96", "B) 48", "C) 192", "D) 64"], answer: 0 },
-          { q: "What is r for: 81, 27, 9, 3...?", options: ["A) 3", "B) 1/3", "C) -3", "D) 1/9"], answer: 1 }
+          { q: "1. Find a₆ if a₁ = 3 and r = 2.", options: ["A) 96", "B) 48", "C) 192", "D) 64"], answer: 0 },
+          { q: "2. What is r for: 81, 27, 9, 3...?", options: ["A) 3", "B) 1/3", "C) -3", "D) 1/9"], answer: 1 },
+          { q: "3. Find the 7th term of: 2, 4, 8...", options: ["A) 128", "B) 64", "C) 256", "D) 100"], answer: 0 },
+          { q: "4. If a₁ = 5 and r = -2, find a₅.", options: ["A) 80", "B) -80", "C) 160", "D) -160"], answer: 0 },
+          { q: "5. Find a₄ if a₁ = 100 and r = 0.1.", options: ["A) 0.1", "B) 1", "C) 0.01", "D) 10"], answer: 0 }
         ],
         hard: [
-          { q: "If a₂ = 10 and a₅ = 80, find a₁.", options: ["A) 2.5", "B) 5", "C) 2", "D) 4"], answer: 1 },
-          { q: "Find the 8th term of 1, -2, 4, -8...", options: ["A) 128", "B) -128", "C) -256", "D) 256"], answer: 1 }
+          { q: "1. If a₂ = 10 and a₅ = 80, find a₁.", options: ["A) 2.5", "B) 5", "C) 2", "D) 4"], answer: 1 },
+          { q: "2. Find the 8th term of 1, -2, 4, -8...", options: ["A) 128", "B) -128", "C) -256", "D) 256"], answer: 1 },
+          { q: "3. If a₃ = 18 and a₆ = 486, find r.", options: ["A) 3", "B) 2", "C) 4", "D) 5"], answer: 0 },
+          { q: "4. Which term of 3, 6, 12... is 384?", options: ["A) 7th", "B) 8th", "C) 9th", "D) 10th"], answer: 1 },
+          { q: "5. If a₁ = 7 and a₄ = 56, find a₆.", options: ["A) 224", "B) 112", "C) 448", "D) 168"], answer: 0 }
         ]
       },
       geom_ser: {
         title: "Geometric Series",
         easy: [
-          { q: "Find S₃ for: 1 + 2 + 4...", options: ["A) 6", "B) 7", "C) 8", "D) 9"], answer: 1 },
-          { q: "Evaluate sum: 3 + 6 + 12", options: ["A) 21", "B) 18", "C) 24", "D) 20"], answer: 0 }
+          { q: "1. Find S₃ for: 1 + 2 + 4...", options: ["A) 6", "B) 7", "C) 8", "D) 9"], answer: 1 },
+          { q: "2. Evaluate sum: 3 + 6 + 12", options: ["A) 21", "B) 18", "C) 24", "D) 20"], answer: 0 },
+          { q: "3. Find S₃ for: 5 + 15 + 45...", options: ["A) 65", "B) 60", "C) 70", "D) 75"], answer: 0 },
+          { q: "4. Evaluate 2 + 4 + 8 + 16", options: ["A) 30", "B) 28", "C) 32", "D) 26"], answer: 0 },
+          { q: "5. Find S₂ for a₁ = 10, r = 5.", options: ["A) 60", "B) 50", "C) 70", "D) 40"], answer: 0 }
         ],
         medium: [
-          { q: "Find S₅ for a₁ = 2, r = 3.", options: ["A) 242", "B) 243", "C) 162", "D) 80"], answer: 0 },
-          { q: "Sum of infinite series: 8 + 4 + 2 + 1...", options: ["A) 14", "B) 15", "C) 16", "D) Infinite"], answer: 2 }
+          { q: "1. Find S₅ for a₁ = 2, r = 3.", options: ["A) 242", "B) 243", "C) 162", "D) 80"], answer: 0 },
+          { q: "2. Sum of infinite series: 8 + 4 + 2 + 1...", options: ["A) 14", "B) 15", "C) 16", "D) Infinite"], answer: 2 },
+          { q: "3. Find S₄ for: 4 + 12 + 36...", options: ["A) 160", "B) 148", "C) 156", "D) 162"], answer: 0 },
+          { q: "4. Infinite sum of 10 + 5 + 2.5...", options: ["A) 20", "B) 15", "C) 25", "D) 30"], answer: 0 },
+          { q: "5. Evaluate S₆ for a₁ = 1, r = 2.", options: ["A) 63", "B) 64", "C) 62", "D) 65"], answer: 0 }
         ],
         hard: [
-          { q: "Find sum of infinite series: 12 + 4 + 4/3...", options: ["A) 18", "B) 16", "C) 20", "D) 24"], answer: 0 },
-          { q: "Evaluate S₄ for a₁ = 100, r = 0.5.", options: ["A) 187.5", "B) 175", "C) 193.75", "D) 150"], answer: 0 }
+          { q: "1. Find sum of infinite series: 12 + 4 + 4/3...", options: ["A) 18", "B) 16", "C) 20", "D) 24"], answer: 0 },
+          { q: "2. Evaluate S₄ for a₁ = 100, r = 0.5.", options: ["A) 187.5", "B) 175", "C) 193.75", "D) 150"], answer: 0 },
+          { q: "3. Infinite sum for a₁ = 9, r = 1/3.", options: ["A) 13.5", "B) 12", "C) 14.5", "D) 15"], answer: 0 },
+          { q: "4. Find S₅ for a₁ = 3, r = -2.", options: ["A) 33", "B) -33", "C) 31", "D) -31"], answer: 0 },
+          { q: "5. Infinite sum of 16 - 8 + 4 - 2...", options: ["A) 10.67", "B) 32", "C) 8", "D) 16"], answer: 0 }
         ]
       }
     };
@@ -324,8 +356,6 @@
     let currentIdx = 0;
     let score = 0;
     let streak = 0;
-    let timer = null;
-    let timeLeft = 15;
 
     function showView(viewId) {
       playClickSound();
@@ -351,11 +381,6 @@
     }
 
     function loadQuestion() {
-      clearInterval(timer);
-      timeLeft = 15;
-      document.getElementById('timer-bar').style.width = "100%";
-      startTimer();
-
       const q = currentQuestions[currentIdx];
       document.getElementById('question-el').textContent = q.q;
       document.getElementById('progress-el').textContent = `Q${currentIdx + 1} of ${currentQuestions.length}`;
@@ -372,24 +397,7 @@
       });
     }
 
-    function startTimer() {
-      timer = setInterval(() => {
-        timeLeft--;
-        document.getElementById('timer-bar').style.width = (timeLeft / 15 * 100) + "%";
-        if(timeLeft <= 0) {
-          clearInterval(timer);
-          playSound('wrong');
-          streak = 0;
-          document.getElementById('streak-el').textContent = `🔥 ${streak}`;
-          revealCorrectAnswer();
-          disableAllOptions();
-          document.getElementById('next-btn').style.display = 'block';
-        }
-      }, 1000);
-    }
-
     function selectAnswer(selectedIdx, btn) {
-      clearInterval(timer);
       const correctIdx = currentQuestions[currentIdx].answer;
       if (selectedIdx === correctIdx) {
         playSound('correct');
@@ -398,7 +406,7 @@
         score += 100 + (streak * 20);
       } else {
         playSound('wrong');
-        btn.classList.add('wrong');
+          btn.classList.add('wrong');
         streak = 0;
         revealCorrectAnswer();
       }
@@ -436,4 +444,4 @@
     }
   </script>
 </body>
-        </html>
+</html>
