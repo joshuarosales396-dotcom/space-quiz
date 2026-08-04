@@ -1,8 +1,8 @@
 // ======================================
-// SPACE QUIZ GAME
-// SCRIPT.JS - PART 1
+// SPACE QUIZ GAME - SCRIPT.JS
 // ======================================
 
+// Variables
 let currentCategory = "arithmeticSequence";
 let currentDifficulty = "easy";
 let currentQuestionIndex = 0;
@@ -13,6 +13,7 @@ let timerInterval = null;
 
 let currentQuestions = [];
 
+// DOM Elements
 const startScreen = document.getElementById("start-screen");
 const categoryScreen = document.getElementById("category-screen");
 const quizScreen = document.getElementById("quiz-screen");
@@ -27,7 +28,20 @@ const timerElement = document.getElementById("timer");
 const progressBar = document.getElementById("progress");
 
 const finalScore = document.getElementById("final-score");
+const startButton = document.getElementById("start-btn");
+const categoryButtons = document.querySelectorAll(".category-btn");
+const restartButton = document.getElementById("restart-btn");
 
+// Sound Effects
+const correctSound = new Audio("sounds/correct.mp3");
+const wrongSound = new Audio("sounds/wrong.mp3");
+const clickSound = new Audio("sounds/click.mp3");
+const bgMusic = new Audio("sounds/space.mp3");
+
+bgMusic.loop = true;
+bgMusic.volume = 0.4;
+
+// Screen Navigator
 function showScreen(screen) {
     startScreen.style.display = "none";
     categoryScreen.style.display = "none";
@@ -37,21 +51,20 @@ function showScreen(screen) {
     screen.style.display = "block";
 }
 
-showScreen(startScreen);// ======================================
-// SCRIPT.JS - PART 2
-// Start Game & Category Selection
-// ======================================
+// Initial Screen Setup
+showScreen(startScreen);
 
-const startButton = document.getElementById("start-btn");
-const categoryButtons = document.querySelectorAll(".category-btn");
-
+// Start Game & Music
 startButton.addEventListener("click", () => {
+    clickSound.play().catch(() => {});
+    bgMusic.play().catch(() => {});
     showScreen(categoryScreen);
 });
 
+// Category Selection
 categoryButtons.forEach(button => {
     button.addEventListener("click", () => {
-
+        clickSound.play().catch(() => {});
         currentCategory = button.dataset.category;
         currentDifficulty = "easy";
         currentQuestionIndex = 0;
@@ -66,65 +79,50 @@ categoryButtons.forEach(button => {
         );
 
         showScreen(quizScreen);
-
         loadQuestion();
     });
-});// ======================================
-// SCRIPT.JS - PART 3
+});
+
 // Load Question
-// ======================================
-
 function loadQuestion() {
-
     if (currentQuestionIndex >= currentQuestions.length) {
-        showResult();
+        handleDifficultyTransition();
         return;
     }
 
     const currentQuestion = currentQuestions[currentQuestionIndex];
-
     questionElement.textContent = currentQuestion.question;
-
     choicesElement.innerHTML = "";
 
     currentQuestion.choices.forEach(choice => {
-
         const button = document.createElement("button");
-
         button.textContent = choice;
-
         button.classList.add("choice-btn");
 
         button.addEventListener("click", () => {
+            clickSound.play().catch(() => {});
             checkAnswer(choice);
         });
 
         choicesElement.appendChild(button);
-
     });
 
     updateProgress();
-
     startTimer();
+}
 
-}// ======================================
-// SCRIPT.JS - PART 4
 // Check Answer & Score System
-// ======================================
-
 function checkAnswer(selectedAnswer) {
-
     clearInterval(timerInterval);
 
     const currentQuestion = currentQuestions[currentQuestionIndex];
 
     if (selectedAnswer === currentQuestion.answer) {
-
+        correctSound.play().catch(() => {});
         score += 10;
         scoreElement.textContent = score;
-
     } else {
-
+        wrongSound.play().catch(() => {});
         lives--;
         livesElement.textContent = lives;
 
@@ -132,69 +130,48 @@ function checkAnswer(selectedAnswer) {
             showResult();
             return;
         }
-
     }
 
     currentQuestionIndex++;
 
-    // Easy → Medium → Hard
-    if (
-        currentQuestionIndex >= currentQuestions.length &&
-        currentDifficulty === "easy"
-    ) {
+    if (currentQuestionIndex >= currentQuestions.length) {
+        handleDifficultyTransition();
+    } else {
+        loadQuestion();
+    }
+}
 
+// Handle Difficulty Transition (Easy -> Medium -> Hard)
+function handleDifficultyTransition() {
+    if (currentDifficulty === "easy") {
         currentDifficulty = "medium";
         currentQuestionIndex = 0;
-
-        currentQuestions = questions[currentCategory].filter(
-            q => q.difficulty === "medium"
-        );
-
-    } else if (
-        currentQuestionIndex >= currentQuestions.length &&
-        currentDifficulty === "medium"
-    ) {
-
+        currentQuestions = questions[currentCategory].filter(q => q.difficulty === "medium");
+        loadQuestion();
+    } else if (currentDifficulty === "medium") {
         currentDifficulty = "hard";
         currentQuestionIndex = 0;
-
-        currentQuestions = questions[currentCategory].filter(
-            q => q.difficulty === "hard"
-        );
-
-    } else if (
-        currentQuestionIndex >= currentQuestions.length &&
-        currentDifficulty === "hard"
-    ) {
-
+        currentQuestions = questions[currentCategory].filter(q => q.difficulty === "hard");
+        loadQuestion();
+    } else {
         showResult();
-        return;
-
     }
+}
 
-    loadQuestion();
-
-}// ======================================
-// SCRIPT.JS - PART 5
-// Timer, Progress & Result
-// ======================================
-
+// Timer System
 function startTimer() {
-
     clearInterval(timerInterval);
 
     timer = 20;
     timerElement.textContent = timer;
 
     timerInterval = setInterval(() => {
-
         timer--;
         timerElement.textContent = timer;
 
         if (timer <= 0) {
-
             clearInterval(timerInterval);
-
+            wrongSound.play().catch(() => {});
             lives--;
             livesElement.textContent = lives;
 
@@ -204,58 +181,33 @@ function startTimer() {
             }
 
             currentQuestionIndex++;
-            loadQuestion();
-
+            if (currentQuestionIndex >= currentQuestions.length) {
+                handleDifficultyTransition();
+            } else {
+                loadQuestion();
+            }
         }
-
     }, 1000);
-
 }
 
+// Progress Bar
 function updateProgress() {
-
     const total = currentQuestions.length;
-
     const percent = (currentQuestionIndex / total) * 100;
-
     progressBar.style.width = percent + "%";
-
 }
 
+// Show Result Screen
 function showResult() {
-
     clearInterval(timerInterval);
-
     showScreen(resultScreen);
-
     finalScore.textContent = score;
+}
 
-}// ======================================
-// SCRIPT.JS - PART 6
-// Restart Game & Sound Effects
-// ======================================
-
-// Sound Effects
-const correctSound = new Audio("sounds/correct.mp3");
-const wrongSound = new Audio("sounds/wrong.mp3");
-const clickSound = new Audio("sounds/click.mp3");
-const bgMusic = new Audio("sounds/space.mp3");
-
-bgMusic.loop = true;
-bgMusic.volume = 0.4;
-
-// Play music when Start button is clicked
-startButton.addEventListener("click", () => {
-    bgMusic.play().catch(() => {});
-});
-
-// Restart Button
-const restartButton = document.getElementById("restart-btn");
-
+// Restart Game
 if (restartButton) {
-
     restartButton.addEventListener("click", () => {
-
+        clickSound.play().catch(() => {});
         currentCategory = "arithmeticSequence";
         currentDifficulty = "easy";
         currentQuestionIndex = 0;
@@ -266,24 +218,5 @@ if (restartButton) {
         livesElement.textContent = lives;
 
         showScreen(startScreen);
-
     });
-
 }
-
-// Play sound when answering
-const originalCheckAnswer = checkAnswer;
-
-checkAnswer = function(selectedAnswer) {
-
-    const currentQuestion = currentQuestions[currentQuestionIndex];
-
-    if (selectedAnswer === currentQuestion.answer) {
-        correctSound.play();
-    } else {
-        wrongSound.play();
-    }
-
-    originalCheckAnswer(selectedAnswer);
-
-};
