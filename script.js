@@ -1,5 +1,5 @@
 // ======================================
-// SPACE QUIZ GAME - SCRIPT.JS
+// SPACE QUIZ GAME - SCRIPT.JS (FIXED)
 // ======================================
 
 // Variables
@@ -14,6 +14,7 @@ let timerInterval = null;
 let currentQuestions = [];
 
 // DOM Elements
+const loadingScreen = document.getElementById("loading");
 const startScreen = document.getElementById("start-screen");
 const categoryScreen = document.getElementById("category-screen");
 const quizScreen = document.getElementById("quiz-screen");
@@ -41,49 +42,53 @@ const bgMusic = new Audio("sounds/space.mp3");
 bgMusic.loop = true;
 bgMusic.volume = 0.4;
 
-// Screen Navigator
+// Screen Navigator Function
 function showScreen(screen) {
-    startScreen.style.display = "none";
-    categoryScreen.style.display = "none";
-    quizScreen.style.display = "none";
-    resultScreen.style.display = "none";
+    if (startScreen) startScreen.style.display = "none";
+    if (categoryScreen) categoryScreen.style.display = "none";
+    if (quizScreen) quizScreen.style.display = "none";
+    if (resultScreen) resultScreen.style.display = "none";
 
-    screen.style.display = "block";
+    if (screen) screen.style.display = "block";
 }
 
-// Initial Screen Setup
-showScreen(startScreen);
+// Start Game Button Handler
+if (startButton) {
+    startButton.addEventListener("click", () => {
+        clickSound.play().catch(() => {});
+        bgMusic.play().catch(() => {});
+        showScreen(categoryScreen);
+    });
+}
 
-// Start Game & Music
-startButton.addEventListener("click", () => {
-    clickSound.play().catch(() => {});
-    bgMusic.play().catch(() => {});
-    showScreen(categoryScreen);
-});
-
-// Category Selection
+// Category Selection Handler
 categoryButtons.forEach(button => {
     button.addEventListener("click", () => {
         clickSound.play().catch(() => {});
-        currentCategory = button.dataset.category;
+        currentCategory = button.dataset.category || "arithmeticSequence";
         currentDifficulty = "easy";
         currentQuestionIndex = 0;
         score = 0;
         lives = 3;
 
-        scoreElement.textContent = score;
-        livesElement.textContent = lives;
+        if (scoreElement) scoreElement.textContent = score;
+        if (livesElement) livesElement.textContent = lives;
 
-        currentQuestions = questions[currentCategory].filter(q =>
-            q.difficulty === currentDifficulty
-        );
+        // Check if questions variable exists globally
+        if (typeof questions !== 'undefined' && questions[currentCategory]) {
+            currentQuestions = questions[currentCategory].filter(q =>
+                q.difficulty === currentDifficulty
+            );
+        } else {
+            currentQuestions = [];
+        }
 
         showScreen(quizScreen);
         loadQuestion();
     });
 });
 
-// Load Question
+// Load Question Function
 function loadQuestion() {
     if (currentQuestionIndex >= currentQuestions.length) {
         handleDifficultyTransition();
@@ -91,40 +96,42 @@ function loadQuestion() {
     }
 
     const currentQuestion = currentQuestions[currentQuestionIndex];
-    questionElement.textContent = currentQuestion.question;
-    choicesElement.innerHTML = "";
+    if (questionElement) questionElement.textContent = currentQuestion.question;
+    if (choicesElement) choicesElement.innerHTML = "";
 
-    currentQuestion.choices.forEach(choice => {
-        const button = document.createElement("button");
-        button.textContent = choice;
-        button.classList.add("choice-btn");
+    if (currentQuestion && currentQuestion.choices) {
+        currentQuestion.choices.forEach(choice => {
+            const button = document.createElement("button");
+            button.textContent = choice;
+            button.classList.add("choice-btn");
 
-        button.addEventListener("click", () => {
-            clickSound.play().catch(() => {});
-            checkAnswer(choice);
+            button.addEventListener("click", () => {
+                clickSound.play().catch(() => {});
+                checkAnswer(choice);
+            });
+
+            if (choicesElement) choicesElement.appendChild(button);
         });
-
-        choicesElement.appendChild(button);
-    });
+    }
 
     updateProgress();
     startTimer();
 }
 
-// Check Answer & Score System
+// Check Answer Function
 function checkAnswer(selectedAnswer) {
     clearInterval(timerInterval);
 
     const currentQuestion = currentQuestions[currentQuestionIndex];
 
-    if (selectedAnswer === currentQuestion.answer) {
+    if (currentQuestion && selectedAnswer === currentQuestion.answer) {
         correctSound.play().catch(() => {});
         score += 10;
-        scoreElement.textContent = score;
+        if (scoreElement) scoreElement.textContent = score;
     } else {
         wrongSound.play().catch(() => {});
         lives--;
-        livesElement.textContent = lives;
+        if (livesElement) livesElement.textContent = lives;
 
         if (lives <= 0) {
             showResult();
@@ -143,6 +150,11 @@ function checkAnswer(selectedAnswer) {
 
 // Handle Difficulty Transition (Easy -> Medium -> Hard)
 function handleDifficultyTransition() {
+    if (typeof questions === 'undefined' || !questions[currentCategory]) {
+        showResult();
+        return;
+    }
+
     if (currentDifficulty === "easy") {
         currentDifficulty = "medium";
         currentQuestionIndex = 0;
@@ -158,22 +170,22 @@ function handleDifficultyTransition() {
     }
 }
 
-// Timer System
+// Timer Function
 function startTimer() {
     clearInterval(timerInterval);
 
     timer = 20;
-    timerElement.textContent = timer;
+    if (timerElement) timerElement.textContent = timer;
 
     timerInterval = setInterval(() => {
         timer--;
-        timerElement.textContent = timer;
+        if (timerElement) timerElement.textContent = timer;
 
         if (timer <= 0) {
             clearInterval(timerInterval);
             wrongSound.play().catch(() => {});
             lives--;
-            livesElement.textContent = lives;
+            if (livesElement) livesElement.textContent = lives;
 
             if (lives <= 0) {
                 showResult();
@@ -190,21 +202,22 @@ function startTimer() {
     }, 1000);
 }
 
-// Progress Bar
+// Update Progress Bar Function
 function updateProgress() {
-    const total = currentQuestions.length;
+    if (!progressBar) return;
+    const total = currentQuestions.length || 1;
     const percent = (currentQuestionIndex / total) * 100;
     progressBar.style.width = percent + "%";
 }
 
-// Show Result Screen
+// Show Result Screen Function
 function showResult() {
     clearInterval(timerInterval);
     showScreen(resultScreen);
-    finalScore.textContent = score;
+    if (finalScore) finalScore.textContent = score;
 }
 
-// Restart Game
+// Restart Game Button Handler
 if (restartButton) {
     restartButton.addEventListener("click", () => {
         clickSound.play().catch(() => {});
@@ -214,9 +227,19 @@ if (restartButton) {
         score = 0;
         lives = 3;
 
-        scoreElement.textContent = score;
-        livesElement.textContent = lives;
+        if (scoreElement) scoreElement.textContent = score;
+        if (livesElement) livesElement.textContent = lives;
 
         showScreen(startScreen);
     });
 }
+
+// ======================================
+// AUTO-HIDE LOADING SCREEN ON WINDOW LOAD
+// ======================================
+window.addEventListener("load", () => {
+    if (loadingScreen) {
+        loadingScreen.style.display = "none";
+    }
+    showScreen(startScreen);
+});
