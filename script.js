@@ -1,5 +1,5 @@
 // ======================================
-// SPACE QUIZ GAME - SCRIPT.JS (FIXED)
+// SPACE QUIZ GAME - SCRIPT.JS
 // ======================================
 
 // Variables
@@ -42,14 +42,21 @@ const bgMusic = new Audio("sounds/space.mp3");
 bgMusic.loop = true;
 bgMusic.volume = 0.4;
 
-// Screen Navigator Function
+// Screen Navigator Function (Inayos para sa .hidden class)
 function showScreen(screen) {
-    if (startScreen) startScreen.style.display = "none";
-    if (categoryScreen) categoryScreen.style.display = "none";
-    if (quizScreen) quizScreen.style.display = "none";
-    if (resultScreen) resultScreen.style.display = "none";
+    const screens = [loadingScreen, startScreen, categoryScreen, quizScreen, resultScreen];
+    
+    screens.forEach(s => {
+        if (s) {
+            s.classList.add("hidden");
+            s.style.display = "none";
+        }
+    });
 
-    if (screen) screen.style.display = "block";
+    if (screen) {
+        screen.classList.remove("hidden");
+        screen.style.display = "block";
+    }
 }
 
 // Start Game Button Handler
@@ -74,7 +81,6 @@ categoryButtons.forEach(button => {
         if (scoreElement) scoreElement.textContent = score;
         if (livesElement) livesElement.textContent = lives;
 
-        // Check if questions variable exists globally
         if (typeof questions !== 'undefined' && questions[currentCategory]) {
             currentQuestions = questions[currentCategory].filter(q =>
                 q.difficulty === currentDifficulty
@@ -148,7 +154,7 @@ function checkAnswer(selectedAnswer) {
     }
 }
 
-// Handle Difficulty Transition (Easy -> Medium -> Hard)
+// Handle Difficulty Transition
 function handleDifficultyTransition() {
     if (typeof questions === 'undefined' || !questions[currentCategory]) {
         showResult();
@@ -234,12 +240,7 @@ if (restartButton) {
     });
 }
 
-// ======================================
 // AUTO-HIDE LOADING SCREEN ON WINDOW LOAD
-// ======================================
 window.addEventListener("load", () => {
-    if (loadingScreen) {
-        loadingScreen.style.display = "none";
-    }
     showScreen(startScreen);
 });
