@@ -896,7 +896,3 @@ const questions = {
   ]
 
 };
-
-  ]
-
-};
