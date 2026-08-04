@@ -3,89 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌌 Space Math Quiz</title>
-
-    <!-- CSS Link -->
+    <title>Space Math Quiz Game</title>
     <link rel="stylesheet" href="style.css">
-
-    <!-- Orbitron Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts para sa Astig na Sci-Fi Look -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- Space Background -->
-    <div id="stars"></div>
-    <div id="stars2"></div>
-    <div id="stars3"></div>
+    <!-- BACKGROUND EFFECT -->
+    <div class="stars"></div>
+    <div class="twinkling"></div>
 
-    <div class="planet"></div>
-    <div class="planet2"></div>
+    <!-- MAIN CONTAINER -->
+    <div class="game-container">
 
-    <!-- Loading Screen -->
-    <section id="loading">
-        <h1>🚀 SPACE QUIZ</h1>
-        <div class="loader"></div>
-        <p>Loading Universe...</p>
-    </section>
-
-    <!-- Main Menu / Start Screen -->
-    <section id="start-screen" class="hidden">
-        <h1>🌌 SPACE QUIZ GAME</h1>
-        <p>
-            Test your knowledge about
-            Arithmetic & Geometric
-            Sequences and Series!
-        </p>
-        <button id="start-btn">
-            ▶ Start Game
-        </button>
-    </section>
-
-    <!-- Category Selection Screen -->
-    <section id="category-screen" class="hidden">
-        <h2>Select Category</h2>
-        <div class="category-container">
-            <button class="category-btn" data-category="arithmeticSequence">Arithmetic Sequence</button>
-            <button class="category-btn" data-category="arithmeticSeries">Arithmetic Series</button>
-            <button class="category-btn" data-category="geometricSequence">Geometric Sequence</button>
-            <button class="category-btn" data-category="geometricSeries">Geometric Series</button>
-        </div>
-    </section>
-
-    <!-- Quiz Question & Heads-Up Display (HUD) Screen -->
-    <section id="quiz-screen" class="hidden">
-        <div class="hud">
-            <div>❤️ Lives: <span id="lives">3</span></div>
-            <div>⭐ Score: <span id="score">0</span></div>
-            <div>⏱ Time: <span id="timer">20</span>s</div>
+        <!-- 1. LOADING SCREEN -->
+        <div id="loading" class="screen">
+            <h1 class="glow-text">LOADING SYSTEM...</h1>
+            <div class="loader"></div>
+            <p>Preparing Space Coordinates...</p>
         </div>
 
-        <div class="progress-container">
-            <div id="progress"></div>
+        <!-- 2. START SCREEN -->
+        <div id="start-screen" class="screen hidden">
+            <h1 class="glow-text">🚀 SPACE MATH QUIZ</h1>
+            <p class="subtitle">Master Sequences & Series to Navigate the Galaxy!</p>
+            <button id="start-btn" class="btn primary-btn">START MISSION</button>
         </div>
 
-        <div id="questionBox">
-            <h2 id="question">Question Here</h2>
-            <div id="choices"></div>
+        <!-- 3. CATEGORY SELECT SCREEN -->
+        <div id="category-screen" class="screen hidden">
+            <h2>SELECT MISSION CATEGORY</h2>
+            <div class="category-grid">
+                <button class="btn category-btn" data-category="arithmeticSequence">
+                    <span>📐</span> Arithmetic Sequence
+                </button>
+                <button class="btn category-btn" data-category="arithmeticSeries">
+                    <span>➕</span> Arithmetic Series
+                </button>
+                <button class="btn category-btn" data-category="geometricSequence">
+                    <span>🌌</span> Geometric Sequence
+                </button>
+                <button class="btn category-btn" data-category="geometricSeries">
+                    <span>✨</span> Geometric Series
+                </button>
+            </div>
         </div>
-    </section>
 
-    <!-- Game Result Screen -->
-    <section id="result-screen" class="hidden">
-        <h1>Mission Complete!</h1>
-        <h2>Final Score: <span id="final-score">0</span></h2>
-        <button id="restart-btn">Play Again</button>
-    </section>
+        <!-- 4. QUIZ SCREEN -->
+        <div id="quiz-screen" class="screen hidden">
+            <!-- HUD / Status Bar -->
+            <div class="hud">
+                <div class="hud-item">
+                    <span>SCORE:</span> <strong id="score">0</strong>
+                </div>
+                <div class="hud-item">
+                    <span>LIVES:</span> <strong id="lives">3</strong> ❤️
+                </div>
+                <div class="hud-item">
+                    <span>TIME:</span> <strong id="timer">20</strong>s ⏳
+                </div>
+            </div>
 
-    <!-- Audio Effects -->
-    <audio id="bgMusic" loop src="sounds/space.mp3"></audio>
-    <audio id="correct" src="sounds/correct.mp3"></audio>
-    <audio id="wrong" src="sounds/wrong.mp3"></audio>
-    <audio id="click" src="sounds/click.mp3"></audio>
+            <!-- Progress Bar -->
+            <div class="progress-container">
+                <div id="progress" class="progress-bar"></div>
+            </div>
 
-    <!-- JavaScript Files (Dapat nauna ang questions.js sa script.js) -->
+            <!-- Question Card -->
+            <div class="question-card">
+                <h3 id="question">Loading Question...</h3>
+            </div>
+
+            <!-- Choices Container -->
+            <div id="choices" class="choices-grid">
+                <!-- Dynamic choices buttons via JS -->
+            </div>
+        </div>
+
+        <!-- 5. RESULT SCREEN -->
+        <div id="result-screen" class="screen hidden">
+            <h1 class="glow-text">MISSION COMPLETE!</h1>
+            <p class="final-score-text">Your Final Score: <span id="final-score">0</span></p>
+            <button id="restart-btn" class="btn primary-btn">PLAY AGAIN 🔄</button>
+        </div>
+
+    </div>
+
+    <!-- AUDIO EFFECTS (DIRECT WORKING LINKS) -->
+    <audio id="bgMusic" loop src="https://assets.mixkit.co/music/preview/mixkit-game-level-music-689.mp3"></audio>
+    <audio id="correct" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio>
+    <audio id="wrong" src="https://assets.mixkit.co/active_storage/sfx/2959/2959-preview.mp3"></audio>
+    <audio id="click" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
+
+    <!-- JAVASCRIPT FILES (Inuna ang questions bago script) -->
     <script src="questions.js"></script>
     <script src="script.js"></script>
-
 </body>
 </html>
