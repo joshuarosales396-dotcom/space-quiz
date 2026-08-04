@@ -1,17 +1,22 @@
-<!DOCTYPE html>
+    }
+
+    .option-btn {
+      background: #32324d;
+      color: #ffffff;
+      border: 2px solid transparent;<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Geometric Series Quiz Game</title>
+  <title>Geometric Series Outer Space Quiz</title>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
   <style>
     * {
       box-sizing: border-box;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-
     body {
-      background: linear-gradient(135deg, #1e1e2f, #2a2a40);
+      background: radial-gradient(circle at center, #1a103c, #0b061a, #000000);
       color: #ffffff;
       display: flex;
       justify-content: center;
@@ -19,71 +24,332 @@
       min-height: 100vh;
       margin: 0;
       padding: 20px;
+      overflow-x: hidden;
     }
-
+    .stars {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      background: transparent url('https://www.script-tutorials.com/demos/259/images/stars.png') repeat top center;
+      z-index: 0;
+      opacity: 0.5;
+    }
     .quiz-card {
-      background: #252538;
-      border-radius: 12px;
+      position: relative;
+      z-index: 1;
+      background: rgba(30, 20, 60, 0.85);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
       padding: 30px;
       width: 100%;
       max-width: 650px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-      border: 1px solid #3d3d5c;
+      box-shadow: 0 0 30px rgba(138, 43, 226, 0.4), inset 0 0 15px rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(138, 43, 226, 0.5);
     }
-
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 2px solid #3d3d5c;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.1);
       padding-bottom: 15px;
       margin-bottom: 20px;
     }
-
     .header h1 {
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       margin: 0;
       color: #00d2ff;
+      text-shadow: 0 0 10px #00d2ff;
     }
-
-    .score-board {
-      background: #1e1e2f;
+    .stats-bar {
+      display: flex;
+      gap: 15px;
+    }
+    .stat-box {
+      background: rgba(0, 0, 0, 0.4);
       padding: 6px 14px;
       border-radius: 20px;
       font-weight: bold;
-      color: #00e676;
+      font-size: 0.9rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
-
-    .level-badge {
-      display: inline-block;
-      padding: 4px 12px;
-      border-radius: 12px;
-      font-size: 0.85rem;
-      font-weight: bold;
-      margin-bottom: 12px;
-      text-transform: uppercase;
+    .timer-container {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      margin-bottom: 20px;
+      overflow: hidden;
     }
-
-    .easy { background: #2e7d32; color: #ffffff; }
-    .medium { background: #ef6c00; color: #ffffff; }
-    .hard { background: #c62828; color: #ffffff; }
-
-    .question {
-      font-size: 1.15rem;
+    .timer-bar {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, #00ffcc, #ff007f);
+      transition: width 1s linear;
+    }
+    .question-box {
+      font-size: 1.1rem;
+      line-height: 1.6;
       margin-bottom: 25px;
-      line-height: 1.5;
+      min-height: 70px;
     }
-
-    .options {
-      display: flex;
-      flex-direction: column;
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr;
       gap: 12px;
     }
+    .btn-option {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-size: 1rem;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-option:hover:not([disabled]) {
+      background: rgba(138, 43, 226, 0.4);
+      border-color: #00d2ff;
+      transform: translateY(-2px);
+    }
+    .btn-option.correct {
+      background: #00b894 !important;
+      border-color: #55efc4 !important;
+      color: #fff;
+      box-shadow: 0 0 15px #00b894;
+    }
+    .btn-option.wrong {
+      background: #d63031 !important;
+      border-color: #ff7675 !important;
+      color: #fff;
+      box-shadow: 0 0 15px #d63031;
+    }
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 25px;
+    }
+    .btn-next {
+      background: linear-gradient(45deg, #ff007f, #7928ca);
+      border: none;
+      color: #fff;
+      padding: 12px 25px;
+      border-radius: 25px;
+      font-weight: bold;
+      cursor: pointer;
+      display: none;
+      box-shadow: 0 0 15px rgba(255, 0, 127, 0.5);
+    }
+    .results {
+      text-align: center;
+      display: none;
+    }
+    .results h2 {
+      font-size: 2rem;
+      color: #00ffcc;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
 
-    .option-btn {
-      background: #32324d;
-      color: #ffffff;
-      border: 2px solid transparent;
+<div class="stars"></div>
+
+<div class="quiz-card">
+  <div id="quiz-content">
+    <div class="header">
+      <h1>🚀 Space Geometric Quiz</h1>
+      <div class="stats-bar">
+        <div class="stat-box" id="score-el">Score: 0</div>
+        <div class="stat-box" id="streak-el">🔥 0</div>
+      </div>
+    </div>
+
+    <div class="timer-container">
+      <div class="timer-bar" id="timer-bar"></div>
+    </div>
+
+    <div class="question-box" id="question-el">Loading...</div>
+    <div class="options-grid" id="options-el"></div>
+
+    <div class="footer">
+      <span id="progress-el" style="font-size: 0.85rem; opacity: 0.7;">Q1 of 5</span>
+      <button class="btn-next" id="next-btn" onclick="nextQuestion()">Next Question ➔</button>
+    </div>
+  </div>
+
+  <div class="results" id="results-el">
+    <h2>Mission Complete! 🛸</h2>
+    <p id="final-score-text" style="font-size: 1.2rem; margin: 20px 0;"></p>
+    <button class="btn-next" style="display:inline-block;" onclick="restartQuiz()">Play Again 🔄</button>
+  </div>
+</div>
+
+<script>
+  // Web Audio Synthesizer (No external sound files needed)
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  function playSound(type) {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    if (type === 'correct') {
+      osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+      osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+      osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+    } else if (type === 'wrong') {
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+      osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+    }
+  }
+
+  const questions = [
+    {
+      q: "1. Find the sum of the first 5 terms of the geometric series: 2 + 6 + 18 + ...",
+      options: ["A) 242", "B) 243", "C) 162", "D) 80"],
+      answer: 0
+    },
+    {
+      q: "2. What is the common ratio (r) of the geometric sequence: 5, -10, 20, -40?",
+      options: ["A) 2", "B) -2", "C) 0.5", "D) -0.5"],
+      answer: 1
+    },
+    {
+      q: "3. Evaluate the sum of the infinite geometric series: 12 + 6 + 3 + 1.5 + ...",
+      options: ["A) 20", "B) 21", "C) 24", "D) Infinite"],
+      answer: 2
+    },
+    {
+      q: "4. If a₁ = 4 and r = 3, what is the 4th term (a₄)?",
+      options: ["A) 36", "B) 108", "C) 324", "D) 12"],
+      answer: 1
+    },
+    {
+      q: "5. Find S₄ for the series where a₁ = 100 and r = 0.5.",
+      options: ["A) 187.5", "B) 175", "C) 193.75", "D) 150"],
+      answer: 0
+    }
+  ];
+
+  let currentIdx = 0;
+  let score = 0;
+  let streak = 0;
+  let timer;
+  let timeLeft = 15;
+
+  function loadQuestion() {
+    clearInterval(timer);
+    timeLeft = 15;
+    document.getElementById('timer-bar').style.width = "100%";
+    startTimer();
+
+    const q = questions[currentIdx];
+    document.getElementById('question-el').textContent = q.q;
+    document.getElementById('progress-el').textContent = `Q${currentIdx + 1} of ${questions.length}`;
+    document.getElementById('next-btn').style.display = 'none';
+    
+    const optsBox = document.getElementById('options-el');
+    optsBox.innerHTML = '';
+
+    q.options.forEach((opt, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'btn-option';
+      btn.textContent = opt;
+      btn.onclick = () => selectAnswer(idx, btn);
+      optsBox.appendChild(btn);
+    });
+  }
+
+  function startTimer() {
+    timer = setInterval(() => {
+      timeLeft--;
+      document.getElementById('timer-bar').style.width = (timeLeft / 15 * 100) + "%";
+      if(timeLeft <= 0) {
+        clearInterval(timer);
+        autoTimeOut();
+      }
+    }, 1000);
+  }
+
+  function autoTimeOut() {
+    playSound('wrong');
+    streak = 0;
+    document.getElementById('streak-el').textContent = `🔥 ${streak}`;
+    disableButtons(questions[currentIdx].answer);
+    document.getElementById('next-btn').style.display = 'block';
+  }
+
+  function selectAnswer(selectedIdx, btn) {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    clearInterval(timer);
+    
+    const correctIdx = questions[currentIdx].answer;
+    if (selectedIdx === correctIdx) {
+      playSound('correct');
+      btn.classList.add('correct');
+      streak++;
+      score += 100 + (streak * 20); // Extra bonus for streaks!
+    } else {
+      playSound('wrong');
+      btn.classList.add('wrong');
+      streak = 0;
+      disableButtons(correctIdx);
+    }
+
+    document.getElementById('score-el').textContent = `Score: ${score}`;
+    document.getElementById('streak-el').textContent = `🔥 ${streak}`;
+    disableAll();
+    document.getElementById('next-btn').style.display = 'block';
+  }
+
+  function disableButtons(correctIdx) {
+    const btns = document.querySelectorAll('.btn-option');
+    btns[correctIdx].classList.add('correct');
+  }
+
+  function disableAll() {
+    document.querySelectorAll('.btn-option').forEach(b => b.disabled = true);
+  }
+
+  function nextQuestion() {
+    currentIdx++;
+    if (currentIdx < questions.length) {
+      loadQuestion();
+    } else {
+      showResults();
+    }
+  }
+
+  function showResults() {
+    document.getElementById('quiz-content').style.display = 'none';
+    document.getElementById('results-el').style.display = 'block';
+    document.getElementById('final-score-text').innerHTML = `Final Score: <b>${score} points</b>!`;
+
+    // Confetti effect on finish!
+    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+  }
+
+  function restartQuiz() {
+    score = 0; currentIdx = 0; streak = 0;
+    document.getElementById('score-el').textContent = `Score: 0`;
+    document.getElementById('streak-el').textContent = `🔥 0`;
+    document.getElementById('quiz-content').style.display = 'block';
+    document.getElementById('results-el').style.display = 'none';
+    loadQuestion();
+  }
+
+  loadQuestion();
+</script>
+</body>
+</html>
       padding: 14px 18px;
       border-radius: 8px;
       font-size: 1rem;
