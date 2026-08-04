@@ -1,599 +1,106 @@
-    }
-
-    .option-btn {
-      background: #32324d;
-      color: #ffffff;
-      border: 2px solid transparent;<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Geometric Series Outer Space Quiz</title>
+  <title>Space Geometric Series Quiz</title>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
   <style>
-    * {
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
+    * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body {
       background: radial-gradient(circle at center, #1a103c, #0b061a, #000000);
       color: #ffffff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 20px;
-      overflow-x: hidden;
+      display: flex; justify-content: center; align-items: center;
+      min-height: 100vh; margin: 0; padding: 20px; overflow-x: hidden;
     }
     .stars {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      pointer-events: none;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none; opacity: 0.5; z-index: 0;
       background: transparent url('https://www.script-tutorials.com/demos/259/images/stars.png') repeat top center;
-      z-index: 0;
-      opacity: 0.5;
     }
     .quiz-card {
-      position: relative;
-      z-index: 1;
-      background: rgba(30, 20, 60, 0.85);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
-      padding: 30px;
-      width: 100%;
-      max-width: 650px;
+      position: relative; z-index: 1; background: rgba(30, 20, 60, 0.85);
+      backdrop-filter: blur(10px); border-radius: 20px; padding: 30px;
+      width: 100%; max-width: 650px; border: 1px solid rgba(138, 43, 226, 0.5);
       box-shadow: 0 0 30px rgba(138, 43, 226, 0.4), inset 0 0 15px rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(138, 43, 226, 0.5);
     }
     .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-      padding-bottom: 15px;
-      margin-bottom: 20px;
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.1); padding-bottom: 15px; margin-bottom: 20px;
     }
-    .header h1 {
-      font-size: 1.2rem;
-      margin: 0;
-      color: #00d2ff;
-      text-shadow: 0 0 10px #00d2ff;
-    }
-    .stats-bar {
-      display: flex;
-      gap: 15px;
-    }
-    .stat-box {
-      background: rgba(0, 0, 0, 0.4);
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-weight: bold;
-      font-size: 0.9rem;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-    .timer-container {
-      width: 100%;
-      height: 8px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      margin-bottom: 20px;
-      overflow: hidden;
-    }
-    .timer-bar {
-      height: 100%;
-      width: 100%;
-      background: linear-gradient(90deg, #00ffcc, #ff007f);
-      transition: width 1s linear;
-    }
-    .question-box {
-      font-size: 1.1rem;
-      line-height: 1.6;
-      margin-bottom: 25px;
-      min-height: 70px;
-    }
-    .options-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-    }
+    .header h1 { font-size: 1.2rem; margin: 0; color: #00d2ff; text-shadow: 0 0 10px #00d2ff; }
+    .stats-bar { display: flex; gap: 15px; }
+    .stat-box { background: rgba(0, 0, 0, 0.4); padding: 6px 14px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; border: 1px solid rgba(255, 255, 255, 0.2); }
+    .timer-container { width: 100%; height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+    .timer-bar { height: 100%; width: 100%; background: linear-gradient(90deg, #00ffcc, #ff007f); transition: width 1s linear; }
+    .question-box { font-size: 1.1rem; line-height: 1.6; margin-bottom: 25px; min-height: 70px; }
+    .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
     .btn-option {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #fff;
-      padding: 14px 20px;
-      border-radius: 12px;
-      font-size: 1rem;
-      text-align: left;
-      cursor: pointer;
-      transition: all 0.2s ease;
+      background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff; padding: 14px 20px; border-radius: 12px; font-size: 1rem; text-align: left; cursor: pointer; transition: all 0.2s ease;
     }
-    .btn-option:hover:not([disabled]) {
-      background: rgba(138, 43, 226, 0.4);
-      border-color: #00d2ff;
-      transform: translateY(-2px);
-    }
-    .btn-option.correct {
-      background: #00b894 !important;
-      border-color: #55efc4 !important;
-      color: #fff;
-      box-shadow: 0 0 15px #00b894;
-    }
-    .btn-option.wrong {
-      background: #d63031 !important;
-      border-color: #ff7675 !important;
-      color: #fff;
-      box-shadow: 0 0 15px #d63031;
-    }
-    .footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 25px;
-    }
+    .btn-option:hover:not([disabled]) { background: rgba(138, 43, 226, 0.4); border-color: #00d2ff; transform: translateY(-2px); }
+    .btn-option.correct { background: #00b894 !important; border-color: #55efc4 !important; box-shadow: 0 0 15px #00b894; }
+    .btn-option.wrong { background: #d63031 !important; border-color: #ff7675 !important; box-shadow: 0 0 15px #d63031; }
+    .footer { display: flex; justify-content: space-between; align-items: center; margin-top: 25px; }
     .btn-next {
-      background: linear-gradient(45deg, #ff007f, #7928ca);
-      border: none;
-      color: #fff;
-      padding: 12px 25px;
-      border-radius: 25px;
-      font-weight: bold;
-      cursor: pointer;
-      display: none;
-      box-shadow: 0 0 15px rgba(255, 0, 127, 0.5);
+      background: linear-gradient(45deg, #ff007f, #7928ca); border: none; color: #fff;
+      padding: 12px 25px; border-radius: 25px; font-weight: bold; cursor: pointer; display: none; box-shadow: 0 0 15px rgba(255, 0, 127, 0.5);
     }
-    .results {
-      text-align: center;
-      display: none;
-    }
-    .results h2 {
-      font-size: 2rem;
-      color: #00ffcc;
-      margin-bottom: 10px;
-    }
+    .results { text-align: center; display: none; }
+    .results h2 { font-size: 2rem; color: #00ffcc; margin-bottom: 10px; }
   </style>
 </head>
 <body>
-
-<div class="stars"></div>
-
-<div class="quiz-card">
-  <div id="quiz-content">
-    <div class="header">
-      <h1>🚀 Space Geometric Quiz</h1>
-      <div class="stats-bar">
-        <div class="stat-box" id="score-el">Score: 0</div>
-        <div class="stat-box" id="streak-el">🔥 0</div>
+  <div class="stars"></div>
+  <div class="quiz-card">
+    <div id="quiz-content">
+      <div class="header">
+        <h1>🚀 Space Geometric Quiz</h1>
+        <div class="stats-bar">
+          <div class="stat-box" id="score-el">Score: 0</div>
+          <div class="stat-box" id="streak-el">🔥 0</div>
+        </div>
+      </div>
+      <div class="timer-container"><div class="timer-bar" id="timer-bar"></div></div>
+      <div class="question-box" id="question-el">Loading...</div>
+      <div class="options-grid" id="options-el"></div>
+      <div class="footer">
+        <span id="progress-el" style="font-size: 0.85rem; opacity: 0.7;">Q1 of 5</span>
+        <button class="btn-next" id="next-btn" onclick="nextQuestion()">Next Question ➔</button>
       </div>
     </div>
-
-    <div class="timer-container">
-      <div class="timer-bar" id="timer-bar"></div>
-    </div>
-
-    <div class="question-box" id="question-el">Loading...</div>
-    <div class="options-grid" id="options-el"></div>
-
-    <div class="footer">
-      <span id="progress-el" style="font-size: 0.85rem; opacity: 0.7;">Q1 of 5</span>
-      <button class="btn-next" id="next-btn" onclick="nextQuestion()">Next Question ➔</button>
+    <div class="results" id="results-el">
+      <h2>Mission Complete! 🛸</h2>
+      <p id="final-score-text" style="font-size: 1.2rem; margin: 20px 0;"></p>
+      <button class="btn-next" style="display:inline-block;" onclick="restartQuiz()">Play Again 🔄</button>
     </div>
   </div>
-
-  <div class="results" id="results-el">
-    <h2>Mission Complete! 🛸</h2>
-    <p id="final-score-text" style="font-size: 1.2rem; margin: 20px 0;"></p>
-    <button class="btn-next" style="display:inline-block;" onclick="restartQuiz()">Play Again 🔄</button>
-  </div>
-</div>
-
-<script>
-  // Web Audio Synthesizer (No external sound files needed)
-  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  function playSound(type) {
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-
-    if (type === 'correct') {
-      osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
-      osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
-      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-      osc.start(); osc.stop(audioCtx.currentTime + 0.3);
-    } else if (type === 'wrong') {
-      osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-      osc.start(); osc.stop(audioCtx.currentTime + 0.3);
-    }
-  }
-
-  const questions = [
-    {
-      q: "1. Find the sum of the first 5 terms of the geometric series: 2 + 6 + 18 + ...",
-      options: ["A) 242", "B) 243", "C) 162", "D) 80"],
-      answer: 0
-    },
-    {
-      q: "2. What is the common ratio (r) of the geometric sequence: 5, -10, 20, -40?",
-      options: ["A) 2", "B) -2", "C) 0.5", "D) -0.5"],
-      answer: 1
-    },
-    {
-      q: "3. Evaluate the sum of the infinite geometric series: 12 + 6 + 3 + 1.5 + ...",
-      options: ["A) 20", "B) 21", "C) 24", "D) Infinite"],
-      answer: 2
-    },
-    {
-      q: "4. If a₁ = 4 and r = 3, what is the 4th term (a₄)?",
-      options: ["A) 36", "B) 108", "C) 324", "D) 12"],
-      answer: 1
-    },
-    {
-      q: "5. Find S₄ for the series where a₁ = 100 and r = 0.5.",
-      options: ["A) 187.5", "B) 175", "C) 193.75", "D) 150"],
-      answer: 0
-    }
-  ];
-
-  let currentIdx = 0;
-  let score = 0;
-  let streak = 0;
-  let timer;
-  let timeLeft = 15;
-
-  function loadQuestion() {
-    clearInterval(timer);
-    timeLeft = 15;
-    document.getElementById('timer-bar').style.width = "100%";
-    startTimer();
-
-    const q = questions[currentIdx];
-    document.getElementById('question-el').textContent = q.q;
-    document.getElementById('progress-el').textContent = `Q${currentIdx + 1} of ${questions.length}`;
-    document.getElementById('next-btn').style.display = 'none';
-    
-    const optsBox = document.getElementById('options-el');
-    optsBox.innerHTML = '';
-
-    q.options.forEach((opt, idx) => {
-      const btn = document.createElement('button');
-      btn.className = 'btn-option';
-      btn.textContent = opt;
-      btn.onclick = () => selectAnswer(idx, btn);
-      optsBox.appendChild(btn);
-    });
-  }
-
-  function startTimer() {
-    timer = setInterval(() => {
-      timeLeft--;
-      document.getElementById('timer-bar').style.width = (timeLeft / 15 * 100) + "%";
-      if(timeLeft <= 0) {
-        clearInterval(timer);
-        autoTimeOut();
-      }
-    }, 1000);
-  }
-
-  function autoTimeOut() {
-    playSound('wrong');
-    streak = 0;
-    document.getElementById('streak-el').textContent = `🔥 ${streak}`;
-    disableButtons(questions[currentIdx].answer);
-    document.getElementById('next-btn').style.display = 'block';
-  }
-
-  function selectAnswer(selectedIdx, btn) {
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-    clearInterval(timer);
-    
-    const correctIdx = questions[currentIdx].answer;
-    if (selectedIdx === correctIdx) {
-      playSound('correct');
-      btn.classList.add('correct');
-      streak++;
-      score += 100 + (streak * 20); // Extra bonus for streaks!
-    } else {
-      playSound('wrong');
-      btn.classList.add('wrong');
-      streak = 0;
-      disableButtons(correctIdx);
-    }
-
-    document.getElementById('score-el').textContent = `Score: ${score}`;
-    document.getElementById('streak-el').textContent = `🔥 ${streak}`;
-    disableAll();
-    document.getElementById('next-btn').style.display = 'block';
-  }
-
-  function disableButtons(correctIdx) {
-    const btns = document.querySelectorAll('.btn-option');
-    btns[correctIdx].classList.add('correct');
-  }
-
-  function disableAll() {
-    document.querySelectorAll('.btn-option').forEach(b => b.disabled = true);
-  }
-
-  function nextQuestion() {
-    currentIdx++;
-    if (currentIdx < questions.length) {
-      loadQuestion();
-    } else {
-      showResults();
-    }
-  }
-
-  function showResults() {
-    document.getElementById('quiz-content').style.display = 'none';
-    document.getElementById('results-el').style.display = 'block';
-    document.getElementById('final-score-text').innerHTML = `Final Score: <b>${score} points</b>!`;
-
-    // Confetti effect on finish!
-    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-  }
-
-  function restartQuiz() {
-    score = 0; currentIdx = 0; streak = 0;
-    document.getElementById('score-el').textContent = `Score: 0`;
-    document.getElementById('streak-el').textContent = `🔥 0`;
-    document.getElementById('quiz-content').style.display = 'block';
-    document.getElementById('results-el').style.display = 'none';
-    loadQuestion();
-  }
-
-  loadQuestion();
-</script>
-</body>
-</html>
-      padding: 14px 18px;
-      border-radius: 8px;
-      font-size: 1rem;
-      text-align: left;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .option-btn:hover:not([disabled]) {
-      background: #3d3d5c;
-      border-color: #00d2ff;
-    }
-
-    .option-btn.correct {
-      background: #1b5e20 !important;
-      border-color: #00e676 !important;
-    }
-
-    .option-btn.wrong {
-      background: #b71c1c !important;
-      border-color: #ff5252 !important;
-    }
-
-    .next-btn {
-      margin-top: 25px;
-      width: 100%;
-      padding: 14px;
-      background: #00d2ff;
-      color: #1e1e2f;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      display: none;
-      transition: background 0.2s ease;
-    }
-
-    .next-btn:hover {
-      background: #0099cc;
-    }
-
-    .results {
-      text-align: center;
-      padding: 20px 0;
-    }
-
-    .results h2 {
-      font-size: 2rem;
-      color: #00d2ff;
-      margin-bottom: 10px;
-    }
-
-    .restart-btn {
-      background: #00e676;
-      color: #1e1e2f;
-      border: none;
-      padding: 12px 25px;
-      font-size: 1rem;
-      font-weight: bold;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 15px;
-    }
-
-    .restart-btn:hover {
-      background: #00b359;
-    }
-  </style>
-</head>
-<body>
-
-  <div class="quiz-card">
-    <div class="header">
-      <h1>📐 Geometric Series Challenge</h1>
-      <div class="score-board" id="score">Score: 0</div>
-    </div>
-
-    <div id="quizContent">
-      <span class="level-badge" id="levelBadge">Easy</span>
-      <div class="question" id="question">Loading question...</div>
-      <div class="options" id="options"></div>
-      <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Next Question ➡</button>
-    </div>
-
-    <div class="results" id="results" style="display: none;">
-      <h2>Quiz Completed! 🎉</h2>
-      <p id="finalScore" style="font-size: 1.3rem;"></p>
-      <button class="restart-btn" onclick="restartQuiz()">Play Again 🔄</button>
-    </div>
-  </div>
-
   <script>
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(type) {
+      const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      if (type === 'correct') { osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); gain.gain.setValueAtTime(0.1, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3); osc.start(); osc.stop(audioCtx.currentTime + 0.3); }
+      else if (type === 'wrong') { osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, audioCtx.currentTime); gain.gain.setValueAtTime(0.1, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3); osc.start(); osc.stop(audioCtx.currentTime + 0.3); }
+    }
     const questions = [
-      // EASY LEVEL
-      {
-        level: "Easy",
-        levelClass: "easy",
-        question: "1. What is the common ratio (r) of the geometric sequence: 3, 6, 12, 24...?",
-        options: ["2", "3", "4", "6"],
-        correct: 0
-      },
-      {
-        level: "Easy",
-        levelClass: "easy",
-        question: "2. Which of the following formulas is used to find the sum of a finite geometric series?",
-        options: [
-          "S_n = a_1(1 - r^n) / (1 - r)",
-          "S_n = (n/2)(a_1 + a_n)",
-          "S_n = a_1 / (1 - r)",
-          "a_n = a_1 * r^(n-1)"
-        ],
-        correct: 0
-      },
-      {
-        level: "Easy",
-        levelClass: "easy",
-        question: "3. What is the sum of the first 3 terms of the series: 2 + 6 + 18...?",
-        options: ["20", "24", "26", "28"],
-        correct: 2
-      },
-
-      // MEDIUM LEVEL
-      {
-        level: "Medium",
-        levelClass: "medium",
-        question: "4. Under what condition does an Infinite Geometric Series converge to a finite sum?",
-        options: ["|r| > 1", "|r| < 1", "r = 1", "r = 0 only"],
-        correct: 1
-      },
-      {
-        level: "Medium",
-        levelClass: "medium",
-        question: "5. Find the sum of the infinite geometric series: 16 + 8 + 4 + 2...",
-        options: ["24", "30", "32", "Infinity"],
-        correct: 2
-      },
-      {
-        level: "Medium",
-        levelClass: "medium",
-        question: "6. If the first term (a₁) is 5 and the common ratio (r) is 3, what is the 4th term?",
-        options: ["45", "135", "405", "15"],
-        correct: 1
-      },
-
-      // HARD LEVEL
-      {
-        level: "Hard",
-        levelClass: "hard",
-        question: "7. An infinite geometric series has a sum of 20 and a first term of 5. What is the common ratio (r)?",
-        options: ["1/4", "1/2", "3/4", "2/3"],
-        correct: 2
-      },
-      {
-        level: "Hard",
-        levelClass: "hard",
-        question: "8. Express the repeating decimal 0.333... as an infinite geometric series and find its sum.",
-        options: ["1/2", "1/3", "3/10", "1/9"],
-        correct: 1
-      },
-      {
-        level: "Hard",
-        levelClass: "hard",
-        question: "9. A ball is dropped from a height of 100 meters. Each time it bounces, it reaches 50% of its previous height. What is the total vertical distance traveled by the ball when it stops?",
-        options: ["200 meters", "300 meters", "400 meters", "150 meters"],
-        correct: 1
-      }
+      { q: "1. Find the sum of the first 5 terms: 2 + 6 + 18 + ...", options: ["A) 242", "B) 243", "C) 162", "D) 80"], answer: 0 },
+      { q: "2. What is the common ratio (r): 5, -10, 20, -40?", options: ["A) 2", "B) -2", "C) 0.5", "D) -0.5"], answer: 1 },
+      { q: "3. Evaluate the infinite sum: 12 + 6 + 3 + 1.5 + ...", options: ["A) 20", "B) 21", "C) 24", "D) Infinite"], answer: 2 },
+      { q: "4. If a₁ = 4 and r = 3, what is the 4th term (a₄)?", options: ["A) 36", "B) 108", "C) 324", "D) 12"], answer: 1 },
+      { q: "5. Find S₄ where a₁ = 100 and r = 0.5.", options: ["A) 187.5", "B) 175", "C) 193.75", "D) 150"], answer: 0 }
     ];
-
-    let currentQuestionIndex = 0;
-    let score = 0;
-
-    const levelBadgeEl = document.getElementById('levelBadge');
-    const questionEl = document.getElementById('question');
-    const optionsEl = document.getElementById('options');
-    const nextBtn = document.getElementById('nextBtn');
-    const scoreEl = document.getElementById('score');
-    const quizContent = document.getElementById('quizContent');
-    const resultsEl = document.getElementById('results');
-    const finalScoreEl = document.getElementById('finalScore');
-
-    function loadQuestion() {
-      const currentQuiz = questions[currentQuestionIndex];
-      
-      // Update Level Badge
-      levelBadgeEl.textContent = currentQuiz.level;
-      levelBadgeEl.className = `level-badge ${currentQuiz.levelClass}`;
-
-      questionEl.textContent = currentQuiz.question;
-      optionsEl.innerHTML = '';
-      nextBtn.style.display = 'none';
-
-      currentQuiz.options.forEach((option, index) => {
-        const button = document.createElement('button');
-        button.classList.add('option-btn');
-        button.textContent = option;
-        button.onclick = () => selectOption(button, index, currentQuiz.correct);
-        optionsEl.appendChild(button);
-      });
-    }
-
-    function selectOption(selectedBtn, selectedIndex, correctIndex) {
-      const allButtons = optionsEl.querySelectorAll('.option-btn');
-      
-      allButtons.forEach(btn => btn.disabled = true);
-
-      if (selectedIndex === correctIndex) {
-        selectedBtn.classList.add('correct');
-        score += 10;
-        scoreEl.textContent = `Score: ${score}`;
-      } else {
-        selectedBtn.classList.add('wrong');
-        allButtons[correctIndex].classList.add('correct');
-      }
-
-      nextBtn.style.display = 'block';
-    }
-
-    function nextQuestion() {
-      currentQuestionIndex++;
-      if (currentQuestionIndex < questions.length) {
-        loadQuestion();
-      } else {
-        showResults();
-      }
-    }
-
-    function showResults() {
-      quizContent.style.display = 'none';
-      resultsEl.style.display = 'block';
-      const totalPossible = questions.length * 10;
-      finalScoreEl.textContent = `You scored ${score} out of ${totalPossible} points!`;
-    }
-
-    function restartQuiz() {
-      score = 0;
-      currentQuestionIndex = 0;
-      scoreEl.textContent = `Score: ${score}`;
-      resultsEl.style.display = 'none';
-      quizContent.style.display = 'block';
-      loadQuestion();
-    }
-
-    // Start Game
+    let currentIdx = 0, score = 0, streak = 0, timer, timeLeft = 15;
+    function loadQuestion() { clearInterval(timer); timeLeft = 15; document.getElementById('timer-bar').style.width = "100%"; startTimer(); const q = questions[currentIdx]; document.getElementById('question-el').textContent = q.q; document.getElementById('progress-el').textContent = `Q${currentIdx + 1} of ${questions.length}`; document.getElementById('next-btn').style.display = 'none'; const optsBox = document.getElementById('options-el'); optsBox.innerHTML = ''; q.options.forEach((opt, idx) => { const btn = document.createElement('button'); btn.className = 'btn-option'; btn.textContent = opt; btn.onclick = () => selectAnswer(idx, btn); optsBox.appendChild(btn); }); }
+    function startTimer() { timer = setInterval(() => { timeLeft--; document.getElementById('timer-bar').style.width = (timeLeft / 15 * 100) + "%"; if(timeLeft <= 0) { clearInterval(timer); autoTimeOut(); } }, 1000); }
+    function autoTimeOut() { playSound('wrong'); streak = 0; document.getElementById('streak-el').textContent = `🔥 ${streak}`; disableButtons(questions[currentIdx].answer); document.getElementById('next-btn').style.display = 'block'; disableAll(); }
+    function selectAnswer(selectedIdx, btn) { if (audioCtx.state === 'suspended') audioCtx.resume(); clearInterval(timer); const correctIdx = questions[currentIdx].answer; if (selectedIdx === correctIdx) { playSound('correct'); btn.classList.add('correct'); streak++; score += 100 + (streak * 20); } else { playSound('wrong'); btn.classList.add('wrong'); streak = 0; disableButtons(correctIdx); } document.getElementById('score-el').textContent = `Score: ${score}`; document.getElementById('streak-el').textContent = `🔥 ${streak}`; disableAll(); document.getElementById('next-btn').style.display = 'block'; }
+    function disableButtons(correctIdx) { const btns = document.querySelectorAll('.btn-option'); btns[correctIdx].classList.add('correct'); }
+    function disableAll() { document.querySelectorAll('.btn-option').forEach(b => b.disabled = true); }
+    function nextQuestion() { currentIdx++; if (currentIdx < questions.length) { loadQuestion(); } else { showResults(); } }
+    function showResults() { document.getElementById('quiz-content').style.display = 'none'; document.getElementById('results-el').style.display = 'block'; document.getElementById('final-score-text').innerHTML = `Final Score: <b>${score} points</b>!`; confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } }); }
+    function restartQuiz() { score = 0; currentIdx = 0; streak = 0; document.getElementById('score-el').textContent = `Score: 0`; document.getElementById('streak-el').textContent = `🔥 0`; document.getElementById('quiz-content').style.display = 'block'; document.getElementById('results-el').style.display = 'none'; loadQuestion(); }
     loadQuestion();
   </script>
 </body>
