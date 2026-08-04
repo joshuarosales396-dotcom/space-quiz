@@ -3,491 +3,667 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Space Math Academy - Space Battle</title>
+  <title>SpaceQuiz - Arithmetic Series</title>
+  <!-- Google Fonts: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Canvas Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
   <style>
-    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
     body {
-      background: #030108;
+      background-color: #0b071e;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(138, 43, 226, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 85% 25%, rgba(0, 212, 255, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 50% 80%, rgba(111, 0, 255, 0.15) 0%, transparent 50%);
       color: #ffffff;
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 15px;
-      overflow: hidden;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Floating Math Symbols in Background */
+    .bg-symbol {
+      position: absolute;
+      color: rgba(255, 255, 255, 0.04);
+      font-weight: bold;
+      user-select: none;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+      z-index: 1;
       position: relative;
     }
 
-    /* SPACE BATTLE BACKGROUND */
-    .battle-bg {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 0;
-      background: radial-gradient(ellipse at bottom, #100a26 0%, #030108 100%);
+    /* BADGE TOP */
+    .badge-study {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(0, 212, 255, 0.4);
+      background: rgba(0, 212, 255, 0.05);
+      color: #00d4ff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin: 0 auto 20px auto;
     }
 
-    /* HERO SPACESHIP (LEFT) */
-    .hero-ship {
-      position: absolute;
-      bottom: 10%; left: 5%;
-      font-size: 3rem;
-      transform: rotate(45deg);
-      animation: floatShip 3s ease-in-out infinite alternate;
-      filter: drop-shadow(0 0 10px #00d2ff);
+    /* HERO TITLE */
+    .hero-title {
+      font-size: 2.8rem;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 4px;
+      letter-spacing: -1px;
     }
 
-    /* ENEMY SPACESHIP (RIGHT) */
-    .enemy-ship {
-      position: absolute;
-      top: 10%; right: 5%;
-      font-size: 3rem;
-      transform: rotate(-135deg);
-      animation: floatShip 2.5s ease-in-out infinite alternate-reverse;
-      filter: drop-shadow(0 0 10px #ff0055);
+    .hero-title span {
+      color: #7b2cbf;
     }
 
-    @keyframes floatShip {
-      0% { transform: translateY(0px) rotate(42deg); }
-      100% { transform: translateY(-20px) rotate(48deg); }
+    .hero-subtitle {
+      font-size: 1.6rem;
+      font-weight: 700;
+      text-align: center;
+      color: #00d4ff;
+      margin-bottom: 16px;
     }
 
-    /* LASER ANIMATIONS */
-    .laser-blue {
-      position: absolute;
-      width: 4px; height: 30px;
-      background: #00d2ff;
-      box-shadow: 0 0 10px #00d2ff, 0 0 20px #00d2ff;
-      border-radius: 2px;
-      bottom: 15%; left: 8%;
-      animation: shootBlue 2s linear infinite;
+    .hero-desc {
+      text-align: center;
+      color: #94a3b8;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 30px;
+      padding: 0 10px;
     }
 
-    .laser-red {
-      position: absolute;
-      width: 4px; height: 30px;
-      background: #ff0055;
-      box-shadow: 0 0 10px #ff0055, 0 0 20px #ff0055;
-      border-radius: 2px;
-      top: 15%; right: 8%;
-      animation: shootRed 2s linear infinite 1s;
-    }
-
-    @keyframes shootBlue {
-      0% { transform: translate(0, 0) rotate(-45deg); opacity: 1; }
-      100% { transform: translate(75vw, -60vh) rotate(-45deg); opacity: 0; }
-    }
-
-    @keyframes shootRed {
-      0% { transform: translate(0, 0) rotate(135deg); opacity: 1; }
-      100% { transform: translate(-75vw, 60vh) rotate(135deg); opacity: 0; }
-    }
-
-    .quiz-card {
-      position: relative; z-index: 1;
-      background: rgba(15, 10, 35, 0.88);
-      backdrop-filter: blur(16px);
-      border-radius: 24px;
-      padding: 30px;
-      width: 100%;
-      max-width: 680px;
-      border: 1px solid rgba(0, 210, 255, 0.4);
-      box-shadow: 0 0 40px rgba(118, 0, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05);
+    /* STATS ROW */
+    .stats-row {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin-bottom: 30px;
       text-align: center;
     }
 
-    h1 {
-      font-size: 1.8rem; margin-top: 0; color: #00d2ff;
-      text-shadow: 0 0 12px rgba(0, 210, 255, 0.8); letter-spacing: 1px;
+    .stat-item .number {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #a855f7;
     }
-    p.subtitle { color: #a0a5c0; margin-bottom: 25px; font-size: 0.95rem; }
 
-    .grid-container {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 15px; margin-bottom: 20px;
+    .stat-item .label {
+      font-size: 0.7rem;
+      color: #64748b;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-top: 2px;
     }
-    .btn-topic {
-      background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(0, 210, 255, 0.3);
-      color: #fff; padding: 18px 15px; border-radius: 16px; font-size: 1rem;
-      font-weight: bold; cursor: pointer; transition: all 0.25s ease;
-      display: flex; flex-direction: column; align-items: center; gap: 8px;
-    }
-    .btn-topic:hover {
-      background: rgba(0, 210, 255, 0.25); border-color: #00d2ff;
-      transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0, 210, 255, 0.4);
-    }
-    .btn-diff {
-      background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #fff; padding: 15px 20px; border-radius: 14px; font-size: 1.05rem;
-      font-weight: bold; cursor: pointer; margin: 8px 0; width: 100%; transition: all 0.2s ease;
-    }
-    .btn-diff.easy { border-color: #2ecc71; }
-    .btn-diff.easy:hover { background: rgba(46, 204, 113, 0.25); box-shadow: 0 0 15px rgba(46, 204, 113, 0.4); }
-    .btn-diff.medium { border-color: #f1c40f; }
-    .btn-diff.medium:hover { background: rgba(241, 196, 15, 0.25); box-shadow: 0 0 15px rgba(241, 196, 15, 0.4); }
-    .btn-diff.hard { border-color: #e74c3c; }
-    .btn-diff.hard:hover { background: rgba(231, 76, 60, 0.25); box-shadow: 0 0 15px rgba(231, 76, 60, 0.4); }
 
-    .header-bar {
-      display: flex; justify-content: space-between; align-items: center;
-      border-bottom: 2px solid rgba(255, 255, 255, 0.1); padding-bottom: 15px; margin-bottom: 20px;
+    /* FEATURE CARDS */
+    .card-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 30px;
     }
-    .stats-bar { display: flex; gap: 10px; }
-    .stat-box {
-      background: rgba(0, 0, 0, 0.5); padding: 6px 12px; border-radius: 20px;
-      font-weight: bold; font-size: 0.85rem; border: 1px solid rgba(255, 255, 255, 0.2);
+
+    .feature-card {
+      background: rgba(18, 14, 43, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      transition: transform 0.2s ease, border-color 0.2s ease;
     }
-    .question-box { font-size: 1.15rem; line-height: 1.6; margin-bottom: 25px; min-height: 60px; text-align: left; }
-    .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
-    .btn-option {
-      background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #fff; padding: 14px 20px; border-radius: 12px; font-size: 1rem; text-align: left; cursor: pointer; transition: all 0.2s ease;
+
+    .feature-card:hover {
+      border-color: rgba(168, 85, 247, 0.4);
+      transform: translateY(-2px);
     }
-    .btn-option:hover:not([disabled]) { background: rgba(138, 43, 226, 0.4); border-color: #00d2ff; transform: translateY(-2px); }
-    .btn-option.correct { background: #2ecc71 !important; border-color: #2ecc71 !important; box-shadow: 0 0 20px #2ecc71; }
-    .btn-option.wrong { background: #e74c3c !important; border-color: #e74c3c !important; box-shadow: 0 0 20px #e74c3c; }
-    .footer { display: flex; justify-content: space-between; align-items: center; margin-top: 25px; }
-    .btn-action {
-      background: linear-gradient(45deg, #00d2ff, #7928ca); border: none; color: #fff;
-      padding: 12px 24px; border-radius: 25px; font-weight: bold; cursor: pointer; box-shadow: 0 0 15px rgba(0, 210, 255, 0.4); transition: transform 0.2s ease;
+
+    .feature-card .icon {
+      font-size: 1.5rem;
+      color: #00d4ff;
+      margin-bottom: 8px;
     }
-    .btn-action:hover { transform: scale(1.05); }
-    .sound-toggle {
-      position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-      color: white; padding: 5px 10px; border-radius: 15px; cursor: pointer; font-size: 0.8rem;
+
+    .feature-card h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .feature-card p {
+      font-size: 0.85rem;
+      color: #94a3b8;
+    }
+
+    /* LAUNCH BUTTON */
+    .btn-launch {
+      width: 100%;
+      background: linear-gradient(135deg, #7e22ce 0%, #6b21a8 100%);
+      border: 1px solid rgba(168, 85, 247, 0.5);
+      color: #ffffff;
+      padding: 18px;
+      border-radius: 20px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 25px -5px rgba(126, 34, 206, 0.5);
+      transition: all 0.2s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-launch:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 30px -5px rgba(126, 34, 206, 0.7);
+    }
+
+    .footer-note {
+      text-align: center;
+      color: #64748b;
+      font-size: 0.8rem;
+      margin-top: 15px;
+    }
+
+    /* ================= QUIZ SCREEN ================= */
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .btn-back {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .quiz-badges {
+      display: flex;
+      gap: 10px;
+    }
+
+    .badge-pill {
+      background: rgba(18, 14, 43, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #a855f7;
+    }
+
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .q-count {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #64748b;
+      letter-spacing: 1px;
+    }
+
+    .pct-count {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #00d4ff;
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      margin-bottom: 25px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 10%;
+      background: linear-gradient(90deg, #7e22ce, #00d4ff);
+      border-radius: 10px;
+      transition: width 0.3s ease;
+    }
+
+    /* MAIN QUIZ CARD */
+    .quiz-card {
+      background: rgba(18, 14, 43, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 24px;
+      backdrop-filter: blur(12px);
+    }
+
+    .tags-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .tag-purple {
+      background: rgba(126, 34, 206, 0.2);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      color: #c084fc;
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .tag-green {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .question-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .formula-box {
+      background: rgba(126, 34, 206, 0.12);
+      border: 1px solid rgba(168, 85, 247, 0.2);
+      border-radius: 12px;
+      padding: 10px 16px;
+      display: inline-block;
+      color: #c084fc;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 25px;
+    }
+
+    /* OPTIONS */
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .option-btn {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 16px;
+      border-radius: 16px;
+      color: #ffffff;
+      font-size: 1rem;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: all 0.2s ease;
+    }
+
+    .option-btn:hover:not([disabled]) {
+      background: rgba(168, 85, 247, 0.15);
+      border-color: rgba(168, 85, 247, 0.5);
+    }
+
+    .option-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #94a3b8;
+    }
+
+    .option-btn.correct {
+      background: rgba(16, 185, 129, 0.2) !important;
+      border-color: #10b981 !important;
+    }
+
+    .option-btn.correct .option-circle {
+      background: #10b981;
+      color: #fff;
+    }
+
+    .option-btn.wrong {
+      background: rgba(239, 68, 68, 0.2) !important;
+      border-color: #ef4444 !important;
+    }
+
+    .option-btn.wrong .option-circle {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    /* RESULTS SCREEN */
+    .results-card {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .results-title {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #00d4ff;
+      margin-bottom: 10px;
+    }
+
+    .results-score {
+      font-size: 3rem;
+      font-weight: 800;
+      color: #a855f7;
+      margin: 20px 0;
     }
   </style>
 </head>
 <body>
 
-  <!-- ANIMATED SPACE BATTLE BACKGROUND -->
-  <div class="battle-bg">
-    <div class="hero-ship">🚀</div>
-    <div class="enemy-ship">👾</div>
-    <div class="laser-blue"></div>
-    <div class="laser-red"></div>
-  </div>
+  <!-- BACKGROUND MATH SYMBOLS -->
+  <div class="bg-symbol" style="top: 10%; left: 8%; font-size: 2rem;">a₁</div>
+  <div class="bg-symbol" style="top: 15%; right: 10%; font-size: 1.8rem;">aₙ</div>
+  <div class="bg-symbol" style="bottom: 20%; left: 5%; font-size: 2.5rem;">Σ</div>
+  <div class="bg-symbol" style="bottom: 12%; right: 8%; font-size: 1.6rem;">+d</div>
 
-  <div class="quiz-card">
-    <button class="sound-toggle" onclick="toggleBGM()">🔊 Music: ON</button>
+  <div class="container">
 
-    <!-- 1. MAIN LOBBY -->
-    <div id="view-lobby">
-      <h1>⚔️ SPACE MATH ACADEMY ⚔️</h1>
-      <p class="subtitle">Defend the galaxy! Choose your math mission:</p>
-      <div class="grid-container">
-        <button class="btn-topic" onclick="selectTopic('arith_seq')">
-          <span>📈 Arithmetic Sequence</span>
-        </button>
-        <button class="btn-topic" onclick="selectTopic('arith_ser')">
-          <span>➕ Arithmetic Series</span>
-        </button>
-        <button class="btn-topic" onclick="selectTopic('geom_seq')">
-          <span>🚀 Geometric Sequence</span>
-        </button>
-        <button class="btn-topic" onclick="selectTopic('geom_ser')">
-          <span>✨ Geometric Series</span>
-        </button>
+    <!-- 1. LOBBY SCREEN -->
+    <div id="screen-lobby">
+      <div style="text-align: center;">
+        <div class="badge-study">• STUDY MODE • HINTS & EXPLANATIONS •</div>
       </div>
-    </div>
 
-    <!-- 2. DIFFICULTY MENU -->
-    <div id="view-difficulty" style="display: none;">
-      <h1 id="diff-title">Topic Title</h1>
-      <p class="subtitle">Select difficulty level:</p>
-      <button class="btn-diff easy" onclick="startQuiz('easy')">🟢 Easy (5 Questions)</button>
-      <button class="btn-diff medium" onclick="startQuiz('medium')">🟡 Medium (5 Questions)</button>
-      <button class="btn-diff hard" onclick="startQuiz('hard')">🔴 Hard (5 Questions)</button>
-      <br><br>
-      <button class="btn-action" onclick="showView('view-lobby')">⬅ Back to Lobby</button>
-    </div>
+      <h1 class="hero-title">Space<span>Quiz</span></h1>
+      <div class="hero-subtitle">Arithmetic Series</div>
+      <p class="hero-desc">
+        Navigate the cosmos while mastering sequences, series sums, and pattern recognition. Each question comes with hints and full explanations to guide your learning journey.
+      </p>
 
-    <!-- 3. QUIZ SCREEN -->
-    <div id="view-quiz" style="display: none;">
-      <div class="header-bar">
-        <span id="quiz-topic-badge" style="color: #00d2ff; font-weight: bold; font-size: 0.9rem;">Topic</span>
-        <div class="stats-bar">
-          <div class="stat-box" id="score-el">Score: 0</div>
-          <div class="stat-box" id="streak-el">🔥 0</div>
+      <div class="stats-row">
+        <div class="stat-item">
+          <div class="number">10</div>
+          <div class="label">QUESTIONS</div>
+        </div>
+        <div class="stat-item">
+          <div class="number">3</div>
+          <div class="label">TOPIC AREAS</div>
+        </div>
+        <div class="stat-item">
+          <div class="number">∞</div>
+          <div class="label">HINTS AVAILABLE</div>
         </div>
       </div>
-      <div class="question-box" id="question-el">Question goes here...</div>
-      <div class="options-grid" id="options-el"></div>
-      <div class="footer">
-        <span id="progress-el" style="font-size: 0.85rem; opacity: 0.7;">Q1 of 5</span>
-        <button class="btn-action" id="next-btn" style="display: none;" onclick="nextQuestion()">Next Question ➔</button>
+
+      <div class="card-list">
+        <div class="feature-card">
+          <div class="icon">Σ</div>
+          <h3>Arithmetic Sequences</h3>
+          <p>Find terms and common differences</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="icon" style="font-weight: bold;">n</div>
+          <h3>Series Sums</h3>
+          <p>Calculate Sₙ = n/2(2a + (n–1)d)</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="icon">•••</div>
+          <h3>Pattern Recognition</h3>
+          <p>Identify rules in number sequences</p>
+        </div>
+      </div>
+
+      <button class="btn-launch" onclick="startQuiz()">
+        🚀 Launch Quiz
+      </button>
+
+      <div class="footer-note">
+        No account required • Free to play • Study at your own pace
       </div>
     </div>
 
-    <!-- 4. RESULTS SCREEN -->
-    <div id="view-results" style="display: none;">
-      <h1>🛸 BATTLE VICTORY!</h1>
-      <p id="result-message" style="font-size: 1.1rem; color: #a0a5c0;"></p>
-      <h2 id="final-score" style="color: #00ffcc; font-size: 2rem; margin: 20px 0;">0 pts</h2>
-      <button class="btn-action" onclick="showView('view-lobby')">🔄 Main Menu</button>
+    <!-- 2. QUIZ SCREEN -->
+    <div id="screen-quiz" style="display: none;">
+      <div class="quiz-header">
+        <button class="btn-back" onclick="showLobby()">← SpaceQuiz</button>
+        <div class="quiz-badges">
+          <div class="badge-pill" id="score-badge">SCORE 0/10</div>
+          <div class="badge-pill" id="streak-badge">STREAK 0</div>
+        </div>
+      </div>
+
+      <div class="progress-info">
+        <span class="q-count" id="q-count-text">QUESTION 1 OF 10</span>
+        <span class="pct-count" id="pct-text">10% Complete</span>
+      </div>
+
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-fill"></div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="tags-row">
+          <span class="tag-purple">→ Arithmetic Sequence</span>
+          <span class="tag-green">★ Easy</span>
+        </div>
+
+        <div class="question-title" id="question-text">
+          Find the 8th term of the arithmetic sequence: 3, 7, 11, 15, ...
+        </div>
+
+        <div class="formula-box">
+          Formula: aₙ = a₁ + (n - 1)d
+        </div>
+
+        <div class="options-list" id="options-container">
+          <!-- Options will load dynamically -->
+        </div>
+      </div>
     </div>
+
+    <!-- 3. RESULTS SCREEN -->
+    <div id="screen-results" style="display: none;">
+      <div class="quiz-card results-card">
+        <div class="results-title">🛸 MISSION COMPLETE!</div>
+        <p style="color: #94a3b8;">Great job navigating the cosmic math sequence!</p>
+        <div class="results-score" id="final-score-text">0 / 10</div>
+        <button class="btn-launch" onclick="showLobby()">
+          🔄 Play Again
+        </button>
+      </div>
+    </div>
+
   </div>
 
   <script>
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    let bgmOsc = null, bgmGain = null, bgmPlaying = false;
-
-    function playClickSound() {
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(800, audioCtx.currentTime);
-      gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
-      osc.connect(gain); gain.connect(audioCtx.destination);
-      osc.start(); osc.stop(audioCtx.currentTime + 0.05);
-    }
-
-    function playSound(type) {
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.connect(gain); gain.connect(audioCtx.destination);
-
-      if (type === 'correct') {
-        // Laser Shot Sound Effect
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(900, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.2);
-        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
-        osc.start(); osc.stop(audioCtx.currentTime + 0.2);
-      } else if (type === 'wrong') {
-        // Explosion Sound Effect
-        osc.type = 'square';
-        osc.frequency.setValueAtTime(120, audioCtx.currentTime);
-        osc.frequency.linearRampToValueAtTime(40, audioCtx.currentTime + 0.3);
-        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-        osc.start(); osc.stop(audioCtx.currentTime + 0.3);
-      }
-    }
-
-    function toggleBGM() {
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      const btn = document.querySelector('.sound-toggle');
-      if (bgmPlaying) {
-        if(bgmGain) bgmGain.gain.setValueAtTime(0, audioCtx.currentTime);
-        bgmPlaying = false;
-        btn.textContent = "🔇 Music: OFF";
-      } else {
-        startAmbientBGM();
-        bgmPlaying = true;
-        btn.textContent = "🔊 Music: ON";
-      }
-    }
-
-    function startAmbientBGM() {
-      if(bgmOsc) bgmOsc.stop();
-      bgmOsc = audioCtx.createOscillator();
-      bgmGain = audioCtx.createGain();
-      bgmOsc.type = 'triangle';
-      bgmOsc.frequency.setValueAtTime(110, audioCtx.currentTime);
-      bgmGain.gain.setValueAtTime(0.02, audioCtx.currentTime);
-      bgmOsc.connect(bgmGain);
-      bgmGain.connect(audioCtx.destination);
-      bgmOsc.start();
-    }
-
-    // Question Bank Data (5 Questions Each Category)
-    const questionBank = {
-      arith_seq: {
-        title: "Arithmetic Sequence",
-        easy: [
-          { q: "1. Find the common difference (d): 3, 7, 11, 15...", options: ["A) 4", "B) 3", "C) 5", "D) 2"], answer: 0 },
-          { q: "2. What is the 5th term of sequence: 2, 5, 8...", options: ["A) 11", "B) 14", "C) 17", "D) 12"], answer: 1 },
-          { q: "3. Find the next term: 10, 20, 30, 40...", options: ["A) 45", "B) 50", "C) 60", "D) 55"], answer: 1 },
-          { q: "4. What is d in: 12, 9, 6, 3...?", options: ["A) 3", "B) -3", "C) -2", "D) 2"], answer: 1 },
-          { q: "5. Find the 4th term: a₁ = 1, d = 4.", options: ["A) 13", "B) 9", "C) 17", "D) 12"], answer: 0 }
-        ],
-        medium: [
-          { q: "1. If a₁ = 4 and d = 6, find the 10th term (a₁₀).", options: ["A) 60", "B) 58", "C) 54", "D) 64"], answer: 1 },
-          { q: "2. Find the 12th term of: 100, 95, 90...", options: ["A) 40", "B) 50", "C) 45", "D) 55"], answer: 2 },
-          { q: "3. What is the 15th term of: 2, 7, 12...?", options: ["A) 72", "B) 70", "C) 77", "D) 82"], answer: 0 },
-          { q: "4. If a₁ = -5 and d = 3, find a₈.", options: ["A) 16", "B) 19", "C) 18", "D) 21"], answer: 0 },
-          { q: "5. Find d if a₁ = 10 and a₅ = 30.", options: ["A) 4", "B) 5", "C) 6", "D) 3"], answer: 1 }
-        ],
-        hard: [
-          { q: "1. Which term of 5, 11, 17... is equal to 119?", options: ["A) 19th", "B) 20th", "C) 21st", "D) 18th"], answer: 1 },
-          { q: "2. In an arithmetic sequence, a₃ = 12 and a₇ = 24. Find d.", options: ["A) 2", "B) 3", "C) 4", "D) 5"], answer: 1 },
-          { q: "3. If a₄ = 18 and a₉ = 43, find the first term (a₁).", options: ["A) 3", "B) 5", "C) 2", "D) 4"], answer: 0 },
-          { q: "4. How many terms are in sequence: 7, 11, 15... 79?", options: ["A) 18", "B) 19", "C) 20", "D) 21"], answer: 1 },
-          { q: "5. If a₁₀ = 55 and d = 6, find a₁.", options: ["A) 1", "B) 2", "C) 0", "D) -1"], answer: 0 }
-        ]
+    const questions = [
+      {
+        q: "Find the 8th term of the arithmetic sequence: 3, 7, 11, 15, ...",
+        options: ["27", "31", "29", "33"],
+        answer: 1 // 31
       },
-      arith_ser: {
-        title: "Arithmetic Series",
-        easy: [
-          { q: "1. Find the sum of: 2 + 4 + 6 + 8", options: ["A) 20", "B) 18", "C) 24", "D) 16"], answer: 0 },
-          { q: "2. Evaluate S₃ for: 5 + 10 + 15...", options: ["A) 25", "B) 30", "C) 35", "D) 40"], answer: 1 },
-          { q: "3. Sum of first 3 terms: 1 + 2 + 3...", options: ["A) 6", "B) 5", "C) 7", "D) 8"], answer: 0 },
-          { q: "4. Find S₄ for: 10 + 20 + 30 + 40", options: ["A) 90", "B) 100", "C) 110", "D) 80"], answer: 1 },
-          { q: "5. Evaluate 4 + 8 + 12 + 16", options: ["A) 40", "B) 36", "C) 44", "D) 32"], answer: 0 }
-        ],
-        medium: [
-          { q: "1. Find S₁₀ for sequence where a₁ = 3 and a₁₀ = 39.", options: ["A) 210", "B) 195", "C) 200", "D) 220"], answer: 0 },
-          { q: "2. Sum of first 10 terms of: 1 + 3 + 5 + 7...", options: ["A) 90", "B) 110", "C) 100", "D) 120"], answer: 2 },
-          { q: "3. Find S₈ if a₁ = 2 and d = 4.", options: ["A) 128", "B) 120", "C) 112", "D) 130"], answer: 0 },
-          { q: "4. Evaluate S₁₅ for: 5 + 10 + 15...", options: ["A) 600", "B) 580", "C) 620", "D) 550"], answer: 0 },
-          { q: "5. Find S₆ if a₁ = 50 and a₆ = 10.", options: ["A) 180", "B) 200", "C) 160", "D) 150"], answer: 0 }
-        ],
-        hard: [
-          { q: "1. Find the sum of all even integers from 2 to 50.", options: ["A) 650", "B) 600", "C) 700", "D) 550"], answer: 0 },
-          { q: "2. If a₁ = 7, d = 3, find S₂₀.", options: ["A) 710", "B) 700", "C) 720", "D) 690"], answer: 0 },
-          { q: "3. Sum of first 25 multiples of 3?", options: ["A) 975", "B) 950", "C) 1000", "D) 925"], answer: 0 },
-          { q: "4. If Sn = 210, a₁ = 2, and a_n = 40, find n.", options: ["A) 10", "B) 12", "C) 15", "D) 8"], answer: 0 },
-          { q: "5. Find sum of integers from 1 to 100.", options: ["A) 5050", "B) 5000", "C) 5100", "D) 4950"], answer: 0 }
-        ]
+      {
+        q: "What is the common difference (d) in the sequence: 10, 5, 0, -5, ...?",
+        options: ["5", "-5", "0", "10"],
+        answer: 1 // -5
       },
-      geom_seq: {
-        title: "Geometric Sequence",
-        easy: [
-          { q: "1. Find common ratio (r): 2, 6, 18, 54...", options: ["A) 2", "B) 3", "C) 4", "D) 6"], answer: 1 },
-          { q: "2. What is the 4th term: 5, 10, 20...", options: ["A) 30", "B) 35", "C) 40", "D) 50"], answer: 2 },
-          { q: "3. Find r in sequence: 1, 4, 16, 64...", options: ["A) 4", "B) 2", "C) 8", "D) 3"], answer: 0 },
-          { q: "4. Next term of: 3, -6, 12, -24...", options: ["A) 48", "B) -48", "C) 36", "D) -36"], answer: 0 },
-          { q: "5. What is r in: 100, 50, 25...?", options: ["A) 2", "B) 0.5", "C) -2", "D) -0.5"], answer: 1 }
-        ],
-        medium: [
-          { q: "1. Find a₆ if a₁ = 3 and r = 2.", options: ["A) 96", "B) 48", "C) 192", "D) 64"], answer: 0 },
-          { q: "2. What is r for: 81, 27, 9, 3...?", options: ["A) 3", "B) 1/3", "C) -3", "D) 1/9"], answer: 1 },
-          { q: "3. Find the 7th term of: 2, 4, 8...", options: ["A) 128", "B) 64", "C) 256", "D) 100"], answer: 0 },
-          { q: "4. If a₁ = 5 and r = -2, find a₅.", options: ["A) 80", "B) -80", "C) 160", "D) -160"], answer: 0 },
-          { q: "5. Find a₄ if a₁ = 100 and r = 0.1.", options: ["A) 0.1", "B) 1", "C) 0.01", "D) 10"], answer: 0 }
-        ],
-        hard: [
-          { q: "1. If a₂ = 10 and a₅ = 80, find a₁.", options: ["A) 2.5", "B) 5", "C) 2", "D) 4"], answer: 1 },
-          { q: "2. Find the 8th term of 1, -2, 4, -8...", options: ["A) 128", "B) -128", "C) -256", "D) 256"], answer: 1 },
-          { q: "3. If a₃ = 18 and a₆ = 486, find r.", options: ["A) 3", "B) 2", "C) 4", "D) 5"], answer: 0 },
-          { q: "4. Which term of 3, 6, 12... is 384?", options: ["A) 7th", "B) 8th", "C) 9th", "D) 10th"], answer: 1 },
-          { q: "5. If a₁ = 7 and a₄ = 56, find a₆.", options: ["A) 224", "B) 112", "C) 448", "D) 168"], answer: 0 }
-        ]
+      {
+        q: "Find the 10th term of the sequence where a₁ = 4 and d = 6.",
+        options: ["58", "60", "54", "64"],
+        answer: 0 // 58
       },
-      geom_ser: {
-        title: "Geometric Series",
-        easy: [
-          { q: "1. Find S₃ for: 1 + 2 + 4...", options: ["A) 6", "B) 7", "C) 8", "D) 9"], answer: 1 },
-          { q: "2. Evaluate sum: 3 + 6 + 12", options: ["A) 21", "B) 18", "C) 24", "D) 20"], answer: 0 },
-          { q: "3. Find S₃ for: 5 + 15 + 45...", options: ["A) 65", "B) 60", "C) 70", "D) 75"], answer: 0 },
-          { q: "4. Evaluate 2 + 4 + 8 + 16", options: ["A) 30", "B) 28", "C) 32", "D) 26"], answer: 0 },
-          { q: "5. Find S₂ for a₁ = 10, r = 5.", options: ["A) 60", "B) 50", "C) 70", "D) 40"], answer: 0 }
-        ],
-        medium: [
-          { q: "1. Find S₅ for a₁ = 2, r = 3.", options: ["A) 242", "B) 243", "C) 162", "D) 80"], answer: 0 },
-          { q: "2. Sum of infinite series: 8 + 4 + 2 + 1...", options: ["A) 14", "B) 15", "C) 16", "D) Infinite"], answer: 2 },
-          { q: "3. Find S₄ for: 4 + 12 + 36...", options: ["A) 160", "B) 148", "C) 156", "D) 162"], answer: 0 },
-          { q: "4. Infinite sum of 10 + 5 + 2.5...", options: ["A) 20", "B) 15", "C) 25", "D) 30"], answer: 0 },
-          { q: "5. Evaluate S₆ for a₁ = 1, r = 2.", options: ["A) 63", "B) 64", "C) 62", "D) 65"], answer: 0 }
-        ],
-        hard: [
-          { q: "1. Find sum of infinite series: 12 + 4 + 4/3...", options: ["A) 18", "B) 16", "C) 20", "D) 24"], answer: 0 },
-          { q: "2. Evaluate S₄ for a₁ = 100, r = 0.5.", options: ["A) 187.5", "B) 175", "C) 193.75", "D) 150"], answer: 0 },
-          { q: "3. Infinite sum for a₁ = 9, r = 1/3.", options: ["A) 13.5", "B) 12", "C) 14.5", "D) 15"], answer: 0 },
-          { q: "4. Find S₅ for a₁ = 3, r = -2.", options: ["A) 33", "B) -33", "C) 31", "D) -31"], answer: 0 },
-          { q: "5. Infinite sum of 16 - 8 + 4 - 2...", options: ["A) 10.67", "B) 32", "C) 8", "D) 16"], answer: 0 }
-        ]
+      {
+        q: "Calculate the sum of the first 5 terms of: 2, 4, 6, 8, 10...",
+        options: ["20", "30", "25", "40"],
+        answer: 1 // 30
+      },
+      {
+        q: "What is the first term (a₁) if a₅ = 21 and d = 4?",
+        options: ["3", "5", "1", "7"],
+        answer: 1 // 5
+      },
+      {
+        q: "Find the 12th term of sequence: 100, 95, 90...",
+        options: ["40", "50", "45", "55"],
+        answer: 2 // 45
+      },
+      {
+        q: "Evaluate S₁₀ for sequence where a₁ = 3 and a₁₀ = 39.",
+        options: ["210", "195", "200", "220"],
+        answer: 0 // 210
+      },
+      {
+        q: "Find the common difference (d) if a₁ = 2 and a₄ = 11.",
+        options: ["2", "3", "4", "5"],
+        answer: 1 // 3
+      },
+      {
+        q: "Which term of sequence 5, 11, 17... is equal to 23?",
+        options: ["3rd", "4th", "5th", "6th"],
+        answer: 1 // 4th
+      },
+      {
+        q: "Find the sum of all even numbers from 2 to 20.",
+        options: ["110", "100", "120", "90"],
+        answer: 0 // 110
       }
-    };
+    ];
 
-    let selectedTopicKey = '';
-    let currentQuestions = [];
     let currentIdx = 0;
     let score = 0;
     let streak = 0;
 
-    function showView(viewId) {
-      playClickSound();
-     ['view-lobby', 'view-difficulty', 'view-quiz', 'view-results'].forEach(id => {
-        document.getElementById(id).style.display = (id === viewId) ? 'block' : 'none';
-      });
+    function showLobby() {
+      document.getElementById('screen-lobby').style.display = 'block';
+      document.getElementById('screen-quiz').style.display = 'none';
+      document.getElementById('screen-results').style.display = 'none';
     }
 
-    function selectTopic(topicKey) {
-      selectedTopicKey = topicKey;
-      document.getElementById('diff-title').textContent = questionBank[topicKey].title;
-      showView('view-difficulty');
-    }
-
-    function startQuiz(difficulty) {
-      currentQuestions = questionBank[selectedTopicKey][difficulty];
-      currentIdx = 0; score = 0; streak = 0;
-      document.getElementById('quiz-topic-badge').textContent = `${questionBank[selectedTopicKey].title} (${difficulty.toUpperCase()})`;
-      document.getElementById('score-el').textContent = "Score: 0";
-      document.getElementById('streak-el').textContent = "🔥 0";
-      showView('view-quiz');
+    function startQuiz() {
+      currentIdx = 0;
+      score = 0;
+      streak = 0;
+      document.getElementById('screen-lobby').style.display = 'none';
+      document.getElementById('screen-results').style.display = 'none';
+      document.getElementById('screen-quiz').style.display = 'block';
       loadQuestion();
     }
 
     function loadQuestion() {
-      const q = currentQuestions[currentIdx];
-      document.getElementById('question-el').textContent = q.q;
-      document.getElementById('progress-el').textContent = `Q${currentIdx + 1} of ${currentQuestions.length}`;
-      document.getElementById('next-btn').style.display = 'none';
+      const q = questions[currentIdx];
+      
+      // Update Progress
+      const qNum = currentIdx + 1;
+      const pct = (qNum / questions.length) * 100;
+      
+      document.getElementById('q-count-text').textContent = `QUESTION ${qNum} OF ${questions.length}`;
+      document.getElementById('pct-text').textContent = `${pct}% Complete`;
+      document.getElementById('progress-fill').style.width = `${pct}%`;
+      document.getElementById('score-badge').textContent = `SCORE ${score}/${questions.length}`;
+      document.getElementById('streak-badge').textContent = `STREAK ${streak}`;
 
-      const optsBox = document.getElementById('options-el');
-      optsBox.innerHTML = '';
+      // Set Question Text
+      document.getElementById('question-text').textContent = q.q;
+
+      // Set Options
+      const container = document.getElementById('options-container');
+      container.innerHTML = '';
+
+      const letters = ['A', 'B', 'C', 'D'];
+
       q.options.forEach((opt, idx) => {
         const btn = document.createElement('button');
-        btn.className = 'btn-option';
-        btn.textContent = opt;
+        btn.className = 'option-btn';
+        btn.innerHTML = `
+          <div class="option-circle">${letters[idx]}</div>
+          <span>${opt}</span>
+        `;
         btn.onclick = () => selectAnswer(idx, btn);
-        optsBox.appendChild(btn);
+        container.appendChild(btn);
       });
     }
 
     function selectAnswer(selectedIdx, btn) {
-      const correctIdx = currentQuestions[currentIdx].answer;
+      const correctIdx = questions[currentIdx].answer;
+      const allBtns = document.querySelectorAll('.option-btn');
+
+      // Disable all buttons after click
+      allBtns.forEach(b => b.disabled = true);
+
       if (selectedIdx === correctIdx) {
-        playSound('correct');
         btn.classList.add('correct');
+        score++;
         streak++;
-        score += 100 + (streak * 20);
       } else {
-        playSound('wrong');
         btn.classList.add('wrong');
+        allBtns[correctIdx].classList.add('correct');
         streak = 0;
-        revealCorrectAnswer();
       }
-      document.getElementById('score-el').textContent = `Score: ${score}`;
-      document.getElementById('streak-el').textContent = `🔥 ${streak}`;
-      disableAllOptions();
-      document.getElementById('next-btn').style.display = 'block';
-    }
 
-    function revealCorrectAnswer() {
-      const btns = document.querySelectorAll('.btn-option');
-      const correctIdx = currentQuestions[currentIdx].answer;
-      if(btns[correctIdx]) btns[correctIdx].classList.add('correct');
-    }
+      document.getElementById('score-badge').textContent = `SCORE ${score}/${questions.length}`;
+      document.getElementById('streak-badge').textContent = `STREAK ${streak}`;
 
-    function disableAllOptions() {
-      document.querySelectorAll('.btn-option').forEach(b => b.disabled = true);
-    }
-
-    function nextQuestion() {
-      playClickSound();
-      currentIdx++;
-      if (currentIdx < currentQuestions.length) {
-        loadQuestion();
-      } else {
-        finishQuiz();
-      }
+      // Move to next question after 1.2 seconds
+      setTimeout(() => {
+        currentIdx++;
+        if (currentIdx < questions.length) {
+          loadQuestion();
+        } else {
+          finishQuiz();
+        }
+      }, 1200);
     }
 
     function finishQuiz() {
-      showView('view-results');
-      document.getElementById('final-score').textContent = `${score} PTS`;
-      document.getElementById('result-message').textContent = `Great job pilot! You completed the ${questionBank[selectedTopicKey].title} module.`;
-      confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+      document.getElementById('screen-quiz').style.display = 'none';
+      document.getElementById('screen-results').style.display = 'block';
+      document.getElementById('final-score-text').textContent = `${score} / ${questions.length}`;
+      
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
     }
   </script>
 </body>
