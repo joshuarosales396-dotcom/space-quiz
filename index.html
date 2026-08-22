@@ -3,101 +3,709 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Space Math Quiz Game</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- Google Fonts para sa Astig na Sci-Fi Look -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <title>Introduction to Verbs - Interactive Practice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #4ade80;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .content {
+            padding: 40px;
+            min-height: 400px;
+        }
+
+        .lesson-section {
+            display: none;
+        }
+
+        .lesson-section.active {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .question-container {
+            margin-bottom: 30px;
+        }
+
+        .question-text {
+            font-size: 1.1em;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f9f9f9;
+            font-size: 1em;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            border-color: #667eea;
+            background: #e8eeff;
+        }
+
+        .option.correct {
+            border-color: #4ade80;
+            background: #f0fdf4;
+            color: #22c55e;
+            font-weight: 600;
+        }
+
+        .option.incorrect {
+            border-color: #ef4444;
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+            font-weight: 500;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: #f0fdf4;
+            color: #22c55e;
+            border-left: 4px solid #22c55e;
+        }
+
+        .feedback.incorrect {
+            background: #fef2f2;
+            color: #dc2626;
+            border-left: 4px solid #dc2626;
+        }
+
+        .info-box {
+            background: #f0f4ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .info-box strong {
+            color: #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+            justify-content: center;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-next:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-next:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-restart {
+            background: #f97316;
+            color: white;
+        }
+
+        .btn-restart:hover {
+            background: #ea580c;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(249, 115, 22, 0.3);
+        }
+
+        .completion-screen {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .completion-screen h2 {
+            font-size: 2.5em;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 30px auto;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .score-text {
+            color: white;
+            font-size: 3em;
+            font-weight: bold;
+        }
+
+        .completion-message {
+            font-size: 1.2em;
+            color: #333;
+            margin: 20px 0;
+            line-height: 1.8;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-box {
+            background: #f0f4ff;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #667eea;
+        }
+
+        .stat-box h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .stat-box p {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .section-title {
+                font-size: 1.5em;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-
-    <!-- BACKGROUND EFFECT -->
-    <div class="stars"></div>
-    <div class="twinkling"></div>
-
-    <!-- MAIN CONTAINER -->
-    <div class="game-container">
-
-        <!-- 1. LOADING SCREEN -->
-        <div id="loading" class="screen">
-            <h1 class="glow-text">LOADING SYSTEM...</h1>
-            <div class="loader"></div>
-            <p>Preparing Space Coordinates...</p>
-        </div>
-
-        <!-- 2. START SCREEN -->
-        <div id="start-screen" class="screen hidden">
-            <h1 class="glow-text">🚀 SPACE MATH QUIZ</h1>
-            <p class="subtitle">Master Sequences & Series to Navigate the Galaxy!</p>
-            <button id="start-btn" class="btn primary-btn">START MISSION</button>
-        </div>
-
-        <!-- 3. CATEGORY SELECT SCREEN -->
-        <div id="category-screen" class="screen hidden">
-            <h2>SELECT MISSION CATEGORY</h2>
-            <div class="category-grid">
-                <button class="btn category-btn" data-category="arithmeticSequence">
-                    <span>📐</span> Arithmetic Sequence
-                </button>
-                <button class="btn category-btn" data-category="arithmeticSeries">
-                    <span>➕</span> Arithmetic Series
-                </button>
-                <button class="btn category-btn" data-category="geometricSequence">
-                    <span>🌌</span> Geometric Sequence
-                </button>
-                <button class="btn category-btn" data-category="geometricSeries">
-                    <span>✨</span> Geometric Series
-                </button>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 Introduction to Verbs</h1>
+            <p>Master the fundamentals of verbs through interactive practice!</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
             </div>
         </div>
 
-        <!-- 4. QUIZ SCREEN -->
-        <div id="quiz-screen" class="screen hidden">
-            <!-- HUD / Status Bar -->
-            <div class="hud">
-                <div class="hud-item">
-                    <span>SCORE:</span> <strong id="score">0</strong>
+        <div class="content">
+            <!-- Section 1: What are Verbs? -->
+            <div class="lesson-section active" data-section="1">
+                <h2 class="section-title">📖 Lesson 1: What are Verbs?</h2>
+                <div class="info-box">
+                    <strong>Verbs</strong> are words that express action, occurrence, or state of being. They are essential to every sentence, as they tell us what someone or something is doing or what is happening.
                 </div>
-                <div class="hud-item">
-                    <span>LIVES:</span> <strong id="lives">3</strong> ❤️
+
+                <div class="question-container">
+                    <p class="question-text">Which sentence contains a verb?</p>
+                    <div class="options">
+                        <div class="option" onclick="checkAnswer(this, false)">The happy dog</div>
+                        <div class="option" onclick="checkAnswer(this, true)">The dog runs quickly</div>
+                        <div class="option" onclick="checkAnswer(this, false)">The beautiful garden</div>
+                        <div class="option" onclick="checkAnswer(this, false)">Tomorrow morning</div>
+                    </div>
+                    <div class="feedback"></div>
                 </div>
-                <div class="hud-item">
-                    <span>TIME:</span> <strong id="timer">20</strong>s ⏳
+
+                <div class="question-container">
+                    <p class="question-text">Identify the verb in this sentence: "She sings beautifully."</p>
+                    <div class="options">
+                        <div class="option" onclick="checkAnswer(this, false)">She</div>
+                        <div class="option" onclick="checkAnswer(this, true)">sings</div>
+                        <div class="option" onclick="checkAnswer(this, false)">beautifully</div>
+                        <div class="option" onclick="checkAnswer(this, false)">period</div>
+                    </div>
+                    <div class="feedback"></div>
                 </div>
             </div>
 
-            <!-- Progress Bar -->
-            <div class="progress-container">
-                <div id="progress" class="progress-bar"></div>
+            <!-- Section 2: Kinds of Verbs -->
+            <div class="lesson-section" data-section="2">
+                <h2 class="section-title">🎭 Lesson 2: Kinds of Verbs</h2>
+                <div class="info-box">
+                    <strong>Action Verbs:</strong> Show what someone is doing (run, jump, write)<br>
+                    <strong>Linking Verbs:</strong> Connect subject to description (is, am, are, become, seem)<br>
+                    <strong>Helping Verbs:</strong> Assist the main verb (have, has, do, did, will, can)
+                </div>
+
+                <div class="question-container">
+                    <p class="question-text">What kind of verb is "is" in "She is happy"?</p>
+                    <div class="options">
+                        <div class="option" onclick="checkAnswer(this, true)">Linking verb</div>
+                        <div class="option" onclick="checkAnswer(this, false)">Action verb</div>
+                        <div class="option" onclick="checkAnswer(this, false)">Helping verb</div>
+                        <div class="option" onclick="checkAnswer(this, false)">None of the above</div>
+                    </div>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="question-container">
+                    <p class="question-text">Identify the action verb: "He will play basketball tomorrow."</p>
+                    <div class="options">
+                        <div class="option" onclick="checkAnswer(this, false)">will</div>
+                        <div class="option" onclick="checkAnswer(this, true)">play</div>
+                        <div class="option" onclick="checkAnswer(this, false)">tomorrow</div>
+                        <div class="option" onclick="checkAnswer(this, false)">basketball</div>
+                    </div>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="question-container">
+                    <p class="question-text">Which verb is a helping verb in "They have completed the project"?</p>
+                    <div class="options">
+                        <div class="option" onclick="checkAnswer(this, true)">have</div>
+                        <div class="option" onclick="checkAnswer(this, false)">completed</div>
+                        <div class="option" onclick="checkAnswer(this, false)">project</div>
+                        <div class="option" onclick="checkAnswer(this, false)">They</div>
+                    </div>
+                    <div class="feedback"></div>
+                </div>
             </div>
 
-            <!-- Question Card -->
-            <div class="question-card">
-                <h3 id="question">Loading Question...</h3>
+            <!-- Section 3: Properties of Verbs -->
+            <div class="lesson-section" data-section="3">
+                <h2 class="section-title">⚙️ Lesson 3: Properties of Verbs</h2>
+                <div class="info-box">
+                    <strong>Tense:</strong> Present, Past, Future<br>
+                    <strong>Aspect:</strong> Simple, Progressive, Perfect<br>
+                    <strong>Mood:</strong> Indicative, Imperative, Subjunctive<br>
+                    <strong>Voice:</strong> Active or Passive
+                </div>
+
+                <div class="question-container">
+                    <p class="question-text">What tense is "She will run"?</p>
+                    <div class="options">
+                        <div class="option" onclick="checkAnswer(this, false)">Past tense</div>
+                        <div class="option" onclick="checkAnswer(this, true)">Future tense</div>
+                        <div class="option" onclick="checkAnswer(this, false)">Present tense</div>
+                        <div class="option" onclick="checkAnswer(this, false)">None of the above</div>
+                    </div>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="question-container">
+                    <p class="question-text">Identify the voice in "The cake was baked by Maria."</p>
+                    <div class="options">
+                        <div class="option" onclick="checkAnswer(this, true)">Passive voice</div>
+                        <div class="option" onclick="checkAnswer(this, false)">Active voice</div>
+                        <div class="option" onclick="checkAnswer(this, false)">Imperative voice</div>
+                        <div class="option" onclick="checkAnswer(this, false)">Subjunctive voice</div>
+                    </div>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="question-container">
+                    <p class="question-text">"They are playing basketball" uses which aspect?</p>
+                    <div class="options">
+                        <div class="option" onclick="checkAnswer(this, false)">Simple aspect</div>
+                        <div class="option" onclick="checkAnswer(this, true)">Progressive aspect</div>
+                        <div class="option" onclick="checkAnswer(this, false)">Perfect aspect</div>
+                        <div class="option" onclick="checkAnswer(this, false)">Compound aspect</div>
+                    </div>
+                    <div class="feedback"></div>
+                </div>
             </div>
 
-            <!-- Choices Container -->
-            <div id="choices" class="choices-grid">
-                <!-- Dynamic choices buttons via JS -->
+            <!-- Section 4: Rules of Forming Verbs -->
+            <div class="lesson-section" data-section="4">
+                <h2 class="section-title">📝 Lesson 4: Rules of Forming Verbs</h2>
+                <div class="info-box">
+                    <strong>Regular Verbs:</strong> Add -ed for past tense (walk → walked)<br>
+                    <strong>Irregular Verbs:</strong> Change form (go → went, eat → ate)<br>
+                    <strong>Progressive:</strong> Adding -ing (walk → walking)<br>
+                    <strong>Third Person Singular:</strong> Add -s or -es (he runs, she watches)
+                </div>
+
+                <div class="question-container">
+                    <p class="question-text">What is the past tense of "walk"?</p>
+                    <div class="options">
+                        <div class="option" onclick="checkAnswer(this, true)">walked</div>
+                        <div class="option" onclick="checkAnswer(this, false)">walks</div>
+                        <div class="option" onclick="checkAnswer(this, false)">walking</div>
+                        <div class="option" onclick="checkAnswer(this, false)">wold</div>
+                    </div>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="question-container">
+                    <p class="question-text">"Go" is an irregular verb. What is its past tense?</p>
+                    <div class="options">
+                        <div class="option" onclick="checkAnswer(this, true)">went</div>
+                        <div class="option" onclick="checkAnswer(this, false)">goed</div>
+                        <div class="option" onclick="checkAnswer(this, false)">going</div>
+                        <div class="option" onclick="checkAnswer(this, false)">goes</div>
+                    </div>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="question-container">
+                    <p class="question-text">Choose the correct third person singular form: "She _____ to school."</p>
+                    <div class="options">
+                        <div class="option" onclick="checkAnswer(this, false)">go</div>
+                        <div class="option" onclick="checkAnswer(this, true)">goes</div>
+                        <div class="option" onclick="checkAnswer(this, false)">gone</div>
+                        <div class="option" onclick="checkAnswer(this, false)">going</div>
+                    </div>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+            <!-- Section 5: Subject-Verb Agreement -->
+            <div class="lesson-section" data-section="5">
+                <h2 class="section-title">🤝 Lesson 5: Subject-Verb Agreement</h2>
+                <div class="info-box">
+                    <strong>Rule:</strong> The verb must agree with the subject in number and person.<br>
+                    Singular subject = singular verb (The cat is sleeping)<br>
+                    Plural subject = plural verb (The cats are sleeping)
+                </div>
+
+                <div class="question-container">
+                    <p class="question-text">Choose the correct verb: "The dog _____ in the park."</p>
+                    <div class="options">
+                        <div class="option" onclick="checkAnswer(this, true)">runs</div>
+                        <div class="option" onclick="checkAnswer(this, false)">run</div>
+                        <div class="option" onclick="checkAnswer(this, false)">running</div>
+                        <div class="option" onclick="checkAnswer(this, false)">runned</div>
+                    </div>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="question-container">
+                    <p class="question-text">Choose the correct verb: "The students _____ their homework."</p>
+                    <div class="options">
+                        <div class="option" onclick="checkAnswer(this, false)">does</div>
+                        <div class="option" onclick="checkAnswer(this, true)">do</div>
+                        <div class="option" onclick="checkAnswer(this, false)">is doing</div>
+                        <div class="option" onclick="checkAnswer(this, false)">does do</div>
+                    </div>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="question-container">
+                    <p class="question-text">Which sentence has correct subject-verb agreement?</p>
+                    <div class="options">
+                        <div class="option" onclick="checkAnswer(this, false)">The team are playing well.</div>
+                        <div class="option" onclick="checkAnswer(this, true)">The team is playing well.</div>
+                        <div class="option" onclick="checkAnswer(this, false)">The teams is playing well.</div>
+                        <div class="option" onclick="checkAnswer(this, false)">The team run well.</div>
+                    </div>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+            <!-- Section 6: Verbals and Verbal Phrases -->
+            <div class="lesson-section" data-section="6">
+                <h2 class="section-title">✨ Lesson 6: Verbals and Verbal Phrases</h2>
+                <div class="info-box">
+                    <strong>Verbals:</strong> Verbs used as other parts of speech.<br>
+                    <strong>Gerunds:</strong> -ing form used as nouns (Running is fun)<br>
+                    <strong>Participles:</strong> -ing or -ed form used as adjectives (The running water)<br>
+                    <strong>Infinitives:</strong> "to" + verb used as noun, adjective, or adverb (I want to run)
+                </div>
+
+                <div class="question-container">
+                    <p class="question-text">What is "running" in "Running is my favorite hobby"?</p>
+                    <div class="options">
+                        <div class="option" onclick="checkAnswer(this, true)">Gerund</div>
+                        <div class="option" onclick="checkAnswer(this, false)">Participle</div>
+                        <div class="option" onclick="checkAnswer(this, false)">Infinitive</div>
+                        <div class="option" onclick="checkAnswer(this, false)">Action verb</div>
+                    </div>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="question-container">
+                    <p class="question-text">Identify the verbal phrase: "To succeed in life, you must work hard."</p>
+                    <div class="options">
+                        <div class="option" onclick="checkAnswer(this, true)">To succeed</div>
+                        <div class="option" onclick="checkAnswer(this, false)">in life</div>
+                        <div class="option" onclick="checkAnswer(this, false)">work hard</div>
+                        <div class="option" onclick="checkAnswer(this, false)">you must</div>
+                    </div>
+                    <div class="feedback"></div>
+                </div>
+
+                <div class="question-container">
+                    <p class="question-text">What is "broken" in "The broken window needs repair"?</p>
+                    <div class="options">
+                        <div class="option" onclick="checkAnswer(this, false)">Gerund</div>
+                        <div class="option" onclick="checkAnswer(this, true)">Participle</div>
+                        <div class="option" onclick="checkAnswer(this, false)">Infinitive</div>
+                        <div class="option" onclick="checkAnswer(this, false)">Linking verb</div>
+                    </div>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+            <!-- Completion Screen -->
+            <div class="lesson-section" data-section="7">
+                <div class="completion-screen">
+                    <h2>🎉 Congratulations!</h2>
+                    <p class="completion-message">You've completed the Introduction to Verbs practice!</p>
+                    
+                    <div class="score-circle">
+                        <div class="score-text" id="finalScore">0%</div>
+                    </div>
+
+                    <div class="stats">
+                        <div class="stat-box">
+                            <h3>Correct Answers</h3>
+                            <p id="correctCount">0</p>
+                        </div>
+                        <div class="stat-box">
+                            <h3>Total Questions</h3>
+                            <p id="totalCount">0</p>
+                        </div>
+                    </div>
+
+                    <p class="completion-message" id="performanceMessage"></p>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="button-group" id="buttonGroup">
+                <button class="btn-next" id="nextBtn" onclick="nextSection()">Next Lesson →</button>
             </div>
         </div>
-
-        <!-- 5. RESULT SCREEN -->
-        <div id="result-screen" class="screen hidden">
-            <h1 class="glow-text">MISSION COMPLETE!</h1>
-            <p class="final-score-text">Your Final Score: <span id="final-score">0</span></p>
-            <button id="restart-btn" class="btn primary-btn">PLAY AGAIN 🔄</button>
-        </div>
-
     </div>
 
-    <!-- AUDIO EFFECTS (DIRECT WORKING LINKS) -->
-    <audio id="bgMusic" loop src="https://assets.mixkit.co/music/preview/mixkit-game-level-music-689.mp3"></audio>
-    <audio id="correct" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio>
-    <audio id="wrong" src="https://assets.mixkit.co/active_storage/sfx/2959/2959-preview.mp3"></audio>
-    <audio id="click" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
+    <script>
+        let currentSection = 1;
+        const totalSections = 7;
+        let correctAnswers = 0;
+        let totalQuestions = 0;
+        let answeredQuestions = 0;
 
-    <!-- JAVASCRIPT FILES (Inuna ang questions bago script) -->
-    <script src="questions.js"></script>
-    <script src="script.js"></script>
+        function showSection(section) {
+            document.querySelectorAll('.lesson-section').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.querySelector(`[data-section="${section}"]`).classList.add('active');
+            
+            // Update progress
+            const progress = (section - 1) / (totalSections - 1) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            
+            // Update button
+            const btnNext = document.getElementById('nextBtn');
+            if (section === totalSections) {
+                btnNext.textContent = '✨ See Results';
+            } else {
+                btnNext.textContent = 'Next Lesson →';
+            }
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        function checkAnswer(element, isCorrect) {
+            const container = element.closest('.question-container');
+            const feedback = container.querySelector('.feedback');
+            const options = container.querySelectorAll('.option');
+            
+            // Disable all options
+            options.forEach(opt => opt.style.pointerEvents = 'none');
+            
+            if (isCorrect) {
+                element.classList.add('correct');
+                feedback.classList.add('show', 'correct');
+                feedback.textContent = '✅ Correct! Great job!';
+                correctAnswers++;
+            } else {
+                element.classList.add('incorrect');
+                feedback.classList.add('show', 'incorrect');
+                feedback.textContent = '❌ Not quite. Try again or move to the next question.';
+                // Find and highlight correct answer
+                options.forEach(opt => {
+                    if (opt.getAttribute('onclick').includes('true')) {
+                        opt.classList.add('correct');
+                    }
+                });
+            }
+            
+            answeredQuestions++;
+            
+            // Show next button if all questions answered
+            if (answeredQuestions >= countQuestionsInSection(currentSection)) {
+                document.getElementById('nextBtn').style.opacity = '1';
+            }
+        }
+
+        function countQuestionsInSection(section) {
+            const sectionEl = document.querySelector(`[data-section="${section}"]`);
+            return sectionEl.querySelectorAll('.question-container').length;
+        }
+
+        function nextSection() {
+            if (currentSection < totalSections) {
+                currentSection++;
+                answeredQuestions = 0;
+                showSection(currentSection);
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            const percentage = Math.round((correctAnswers / totalQuestions) * 100);
+            document.getElementById('finalScore').textContent = percentage + '%';
+            document.getElementById('correctCount').textContent = correctAnswers;
+            document.getElementById('totalCount').textContent = totalQuestions;
+            
+            let message = '';
+            if (percentage === 100) {
+                message = '🌟 Perfect score! You are a verb master!';
+            } else if (percentage >= 80) {
+                message = '🎯 Excellent work! You have a strong understanding of verbs!';
+            } else if (percentage >= 60) {
+                message = '👍 Good job! Keep practicing to improve!';
+            } else {
+                message = '💪 Keep practicing! Verbs take time to master!';
+            }
+            
+            document.getElementById('performanceMessage').textContent = message;
+            
+            document.getElementById('nextBtn').textContent = '🔄 Restart Practice';
+            document.getElementById('nextBtn').onclick = function() {
+                location.reload();
+            };
+            
+            showSection(totalSections);
+        }
+
+        // Count total questions
+        function countTotalQuestions() {
+            totalQuestions = document.querySelectorAll('.question-container').length;
+        }
+
+        // Initialize
+        countTotalQuestions();
+        showSection(1);
+    </script>
 </body>
 </html>
